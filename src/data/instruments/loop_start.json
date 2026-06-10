@@ -1,0 +1,11 @@
+{
+  "id": "loop_start",
+  "name": "무한반복 시작",
+  "role": "marker",
+  "category": "marker",
+  "marker": "infinite_start",
+  "color": "#f97316",
+  "img": "/img/loop_start.svg",
+  "pitched": false,
+  "sample": null
+}

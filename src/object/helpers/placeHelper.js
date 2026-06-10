@@ -29,6 +29,10 @@ function loadDetail(id) {
  * @returns {Promise<void>}
  */
 export async function placeHelper(manager, id, cellKey, { preview = false } = {}) {
+    // 배치 위치 뒤로 빈 마디를 확보 (그리드 동적 확장)
+    const placeCol = parseInt(cellKey.split('-')[0], 10);
+    if (Number.isInteger(placeCol)) manager.grid.ensureColumnsForPlacement?.(placeCol);
+
     if (manager.grid.isOccupied(cellKey)) return;
 
     const detail = await loadDetail(id);

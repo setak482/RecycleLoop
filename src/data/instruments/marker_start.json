@@ -1,10 +1,10 @@
 {
   "id": "marker_start",
-  "name": "중단점",
+  "name": "시작점",
   "role": "marker",
   "category": "marker",
   "marker": "start",
-  "color": "#34d399",
+  "color": "#10b981",
   "img": "/img/marker_start.svg",
   "pitched": false,
   "sample": null
