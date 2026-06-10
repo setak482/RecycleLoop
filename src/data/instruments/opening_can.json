@@ -1,0 +1,17 @@
+{
+  "id": "opening_can",
+  "name": "캔 따기",
+  "role": "melody",
+  "category": "melody",
+  "color": "#a8d8ea",
+  "img": "/img/opening_can.png",
+  "pitched": false,
+  "volume": 0,
+  "duration": 0.65,
+  "sample": {
+    "type": "sampler",
+    "notes": {
+      "C4": "/sound/opening_can.wav"
+    }
+  }
+}
