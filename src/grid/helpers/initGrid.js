@@ -7,18 +7,30 @@ export function setGridStyle(worldElement, rows, cols){
     console.log("Grid Style Set.");
 }
 
-export function createCell(worldElement, cellElement, rows, cols) {
+/**
+ * 단일 셀 DOM을 만들어 cellMap에 등록하고 world에 붙입니다.
+ * 명시적 grid 좌표(gridColumn/gridRow)를 부여해, 이후 열을 추가해도
+ * CSS auto-flow로 기존 셀이 밀리지 않게 합니다. 확장 로직에서도 재사용합니다.
+ */
+export function buildCell(worldElement, cellMap, r, c) {
+  const cell = document.createElement('div');
+  const key  = `${c}-${r}`;
+
+  cell.classList.add('grid-cell');
+  cell.dataset.key  = key;
+  cell.dataset.note = KEYS[r].note;
+  cell.style.gridColumn = c + 1;
+  cell.style.gridRow    = r + 1;
+
+  cellMap.set(key, { el: cell, occupied: false, note: KEYS[r].note });
+  worldElement.appendChild(cell);
+  return cell;
+}
+
+export function createCell(worldElement, cellMap, rows, cols) {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      const cell = document.createElement('div');
-      const key  = `${c}-${r}`;
-
-      cell.classList.add('grid-cell');
-      cell.dataset.key  = key;
-      cell.dataset.note = KEYS[r].note;
-
-      cellElement.set(key, { el: cell, occupied: false, note: KEYS[r].note });
-      worldElement.appendChild(cell);
+      buildCell(worldElement, cellMap, r, c);
     }
   }
   console.log("Cell Created.");

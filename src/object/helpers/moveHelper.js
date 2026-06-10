@@ -1,5 +1,9 @@
 export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     if (fromKey === toKey) return;
+
+    const toCol = parseInt(toKey.split('-')[0], 10);
+    if (Number.isInteger(toCol)) manager.grid.ensureColumnsForPlacement?.(toCol);
+
     if (manager.grid.isOccupied(toKey)) return;
 
     const obj = manager.objects.get(fromKey);

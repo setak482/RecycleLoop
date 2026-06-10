@@ -19,9 +19,15 @@ export class PlaybackManager {
     this._samplers = new Map();
     this._playhead = null;
     this._world = null;
-    this._startCol = 0;      // 재생 시작 위치 (중단점 마커 반영)
-    this._loopStartCol = 0;  // 루프가 되감기는 위치 (도돌이표 시작 반영)
-    this._endCol = 0;        // 루프 끝 위치 (도돌이표 끝 반영)
+    this._startCol = 0;          // 재생 시작 위치 (시작점 마커 반영)
+    this._loopStartCol = 0;      // 타임라인이 되감기는 위치
+    this._endCol = 0;            // 타임라인 끝 위치
+    this._breakpointCol = null;  // 중단점 (도달 시 정지, null = 없음)
+    this._repeatStartCol = null; // 도돌이표 시작 (null = 없음)
+    this._repeatEndCol = null;   // 도돌이표 끝
+    this._repeatTaken = false;   // 이번 바퀴에서 도돌이표를 이미 거쳤는지
+    this._infiniteStartCol = null; // 무한 도돌이표 시작 (null = 없음)
+    this._infiniteEndCol = null;   // 무한 도돌이표 끝
     this._currentCol = 0;
     this._Tone = null; // 동적 로드 후 저장
     this._lastObjectManager = null;

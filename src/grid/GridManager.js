@@ -1,7 +1,8 @@
 import { KEYS } from '../constants/keys.js';
-import { COLS } from '../constants/config.js';
+import { COLS, MAX_COLS } from '../constants/config.js';
 
 import { setGridStyle, createCell, centerGrid } from './helpers/initGrid.js';
+import { expandColumns, ensureColumnsForPlacement } from './helpers/expandHelper.js';
 import { initPan }  from './helpers/initPan.js';
 import { applyTransform, setZoom, zoomBy } from './helpers/zoomHelper.js';
 import { applySubdivisionMarkers } from './helpers/subdivisionHelper.js';
@@ -65,6 +66,16 @@ export class GridManager {
 
   setSubdivision(subdivision) {
     applySubdivisionMarkers(this, subdivision);
+  }
+
+  // 오브젝트 배치 시 뒤쪽에 빈 마디를 확보하도록 그리드를 늘립니다.
+  ensureColumnsForPlacement(col) {
+    return ensureColumnsForPlacement(this, col, MAX_COLS);
+  }
+
+  // 저장 파일 로드 등에서 특정 열까지 셀이 존재하도록 보장합니다.
+  ensureColumns(minCols) {
+    return expandColumns(this, minCols, MAX_COLS);
   }
 
   getCell(key)           { return this.cells.get(key); }

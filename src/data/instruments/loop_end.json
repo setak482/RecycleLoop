@@ -1,0 +1,11 @@
+{
+  "id": "loop_end",
+  "name": "무한반복 끝",
+  "role": "marker",
+  "category": "marker",
+  "marker": "infinite_end",
+  "color": "#f97316",
+  "img": "/img/loop_end.svg",
+  "pitched": false,
+  "sample": null
+}
