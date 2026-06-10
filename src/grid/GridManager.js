@@ -1,8 +1,9 @@
 import { KEYS } from '../constants/keys.js';
 import { COLS, MAX_COLS } from '../constants/config.js';
 
-import { setGridStyle, createCell, centerGrid } from './helpers/initGrid.js';
+import { setGridStyle, createCellStates, centerGrid } from './helpers/initGrid.js';
 import { expandColumns, ensureColumnsForPlacement } from './helpers/expandHelper.js';
+import { updateVirtualWindow } from './helpers/virtualWindow.js';
 import { initPan }  from './helpers/initPan.js';
 import { applyTransform, setZoom, zoomBy } from './helpers/zoomHelper.js';
 import { applySubdivisionMarkers } from './helpers/subdivisionHelper.js';
@@ -33,6 +34,14 @@ export class GridManager {
     this.labelWidth = 64;
     // 기본 분할 단위 설정
     this.subdivision = '16n';
+
+    // 가상 윈도 렌더링: 현재 DOM이 존재하는 컬럼 범위 [matStart, matEnd)
+    this.matStart = 0;
+    this.matEnd = 0;
+    // 셀이 다시 화면에 들어올 때 시각 상태를 복원하는 콜백 (key, el)
+    this.cellDecorators = [];
+    // cellKey → 배치된 오브젝트 (ObjectManager가 연결)
+    this.objectLookup = null;
   }
 
   // dynamic grid extension removed
@@ -47,6 +56,7 @@ export class GridManager {
   _applyTransform() {
     applyTransform(this);
     updateRowLabelTransform(this);
+    updateVirtualWindow(this);
   }
 
   setZoom(scale, focusX, focusY) {
@@ -59,11 +69,13 @@ export class GridManager {
 
   init() {
     setGridStyle(this.world, this.rows, this.cols);
-    createCell(this.world, this.cells, this.rows, this.cols);
+    createCellStates(this.cells, this.rows, this.cols);
     createRowLabels(this);
     initPan(this);
     centerGrid(this);
     applySubdivisionMarkers(this, this.subdivision);
+    // 창 크기가 바뀌면 보이는 컬럼 범위도 달라집니다.
+    window.addEventListener('resize', () => this._applyTransform());
   }
 
   setSubdivision(subdivision) {
@@ -86,7 +98,7 @@ export class GridManager {
     const cell = this.cells.get(key);
     if (!cell) return;
     cell.occupied = bool;
-    cell.el.classList.toggle('occupied', bool);
+    cell.el?.classList.toggle('occupied', bool); // el은 화면 밖이면 null
   }
-  highlight(key, bool)   { this.cells.get(key)?.el.classList.toggle('highlight', bool); }
+  highlight(key, bool)   { this.cells.get(key)?.el?.classList.toggle('highlight', bool); }
 }

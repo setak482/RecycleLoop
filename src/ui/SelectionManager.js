@@ -68,6 +68,11 @@ export class SelectionManager {
     this.grid.world.addEventListener('mousedown', this.handleMouseDown);
     window.addEventListener('mousemove', this.handleMouseMove);
     window.addEventListener('mouseup', this.handleMouseUp);
+
+    // 가상 윈도가 셀을 다시 만들 때 선택 표시를 복원합니다.
+    this.grid.cellDecorators?.push((key, el) => {
+      if (this.selectionState.keys.has(key)) el.classList.add('selected');
+    });
   }
 
   isSelectionMode() {

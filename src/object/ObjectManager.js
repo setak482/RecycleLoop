@@ -26,6 +26,8 @@ export class ObjectManager {
 
   init(){
     initHelper(this);
+    // 가상 윈도가 화면 밖에 있던 셀을 다시 만들 때 배치 이미지를 복원하도록 연결
+    this.grid.objectLookup = (key) => this.objects.get(key);
   }
 
   setHistory(history) {

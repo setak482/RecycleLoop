@@ -23,7 +23,8 @@ export function setZoom(manager, scale, focusX, focusY) {
     const offsetY = focusRelY - worldY * newScale;
     manager._setOffset(offsetX, offsetY);
   } else {
-    applyTransform(manager);
+    // _applyTransform을 거쳐야 가상 윈도(보이는 컬럼 범위)도 갱신됩니다.
+    manager._applyTransform();
   }
 }
 

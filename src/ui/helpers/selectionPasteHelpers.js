@@ -22,7 +22,7 @@ export function updatePastePreview(targetKey, pasteState, grid) {
   pasteState.items.forEach(item => {
     const targetKeyInner = `${baseCol + item.offset.col}-${baseRow + item.offset.row}`;
     const targetCell = grid.getCell(targetKeyInner);
-    if (!targetCell) return;
+    if (!targetCell?.el) return; // 화면 밖 셀에는 미리보기 생략
     const previewImg = document.createElement('img');
     previewImg.src = item.src;
     previewImg.alt = item.alt;

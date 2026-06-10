@@ -22,7 +22,8 @@ export function applySubdivisionMarkers(manager, subdivision) {
 
   const setColumn = (col, on) => {
     for (let row = 0; row < manager.rows; row++) {
-      manager.cells.get(`${col}-${row}`)?.el.classList.toggle('bar-line', on);
+      // el이 null인 셀(화면 밖)은 가상 윈도가 생성 시 _markerInterval로 복원
+      manager.cells.get(`${col}-${row}`)?.el?.classList.toggle('bar-line', on);
     }
   };
 

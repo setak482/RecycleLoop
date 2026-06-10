@@ -28,7 +28,8 @@ export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     });
 
     obj.img.remove();
-    manager.grid.getCell(toKey).el.appendChild(newImg);
+    // 화면 밖 셀이면 가상 윈도 생성 시 다시 붙습니다.
+    manager.grid.getCell(toKey)?.el?.appendChild(newImg);
 
     manager.grid.setOccupied(fromKey, false);
     manager.deleteObject(fromKey);

@@ -59,8 +59,7 @@ export async function moveSelectionTo(baseCol, baseRow, selectionState, objects,
 
 export function clearMovePreview(grid, moveState) {
   moveState.previewKeys.forEach(key => {
-    const cell = grid.getCell(key);
-    if (cell) cell.el.classList.remove('move-preview');
+    grid.getCell(key)?.el?.classList.remove('move-preview');
   });
   moveState.previewKeys.clear();
 }
@@ -78,7 +77,7 @@ export function highlightMovePreview(baseCol, baseRow, grid, objects, selectionS
     const targetKey = `${baseCol + offsetCol}-${baseRow + offsetRow}`;
     const cell = grid.getCell(targetKey);
     if (!cell) return;
-    cell.el.classList.add('move-preview');
+    cell.el?.classList.add('move-preview');
     moveState.previewKeys.add(targetKey);
   });
 }

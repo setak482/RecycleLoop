@@ -13,7 +13,7 @@ export function getDurationColumnCount(durationSeconds, bpm, subdivision) {
 export function clearDurationLines(grid) {
   if (!grid._durationLineKeys) return;
   grid._durationLineKeys.forEach(key => {
-    grid.getCell(key)?.el.classList.remove('duration-line');
+    grid.getCell(key)?.el?.classList.remove('duration-line');
   });
   grid._durationLineKeys.clear();
 }
@@ -36,7 +36,8 @@ export function renderDurationLines(grid, objects, bpm) {
       const targetKey = `${targetCol}-${row}`;
       const cell = grid.getCell(targetKey);
       if (!cell) continue;
-      cell.el.classList.add('duration-line');
+      // 화면 밖 셀(el null)도 키는 기록 — 가상 윈도 생성 시 복원됩니다.
+      cell.el?.classList.add('duration-line');
       grid._durationLineKeys.add(targetKey);
     }
   });

@@ -66,13 +66,18 @@ export async function placeHelper(manager, id, cellKey, { preview = false } = {}
       img.classList.remove('dragging');
     });
 
-    manager.grid.getCell(cellKey).el.appendChild(img);
-    // 일괄 작업(불러오기 등) 중에는 수백 개 동시 애니메이션을 피합니다.
-    if (!manager.isBulk?.()) {
-      img.classList.add('bounce-in');
-      img.addEventListener('animationend', () => {
-        img.classList.remove('bounce-in');
-      }, { once: true });
+    // 화면 밖 셀(el null)이면 이미지는 일단 떼어둔 채로 두고,
+    // 가상 윈도가 그 컬럼을 생성할 때 다시 붙입니다.
+    const cellEl = manager.grid.getCell(cellKey)?.el;
+    if (cellEl) {
+      cellEl.appendChild(img);
+      // 일괄 작업(불러오기 등) 중에는 수백 개 동시 애니메이션을 피합니다.
+      if (!manager.isBulk?.()) {
+        img.classList.add('bounce-in');
+        img.addEventListener('animationend', () => {
+          img.classList.remove('bounce-in');
+        }, { once: true });
+      }
     }
 
     manager.grid.setOccupied(cellKey, true);

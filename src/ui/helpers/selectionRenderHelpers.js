@@ -1,7 +1,6 @@
 export function clearSelection(grid, objects, selectionState) {
   selectionState.keys.forEach(key => {
-    const cell = grid.getCell(key);
-    if (cell) cell.el.classList.remove('selected');
+    grid.getCell(key)?.el?.classList.remove('selected');
     const obj = objects.objects.get(key);
     if (obj?.img) {
       obj.img.classList.remove('selected-object');
@@ -15,7 +14,7 @@ export function updateSelectionKeys(keys, grid, objects, selectionState) {
   keys.forEach(key => {
     const cell = grid.getCell(key);
     if (!cell) return;
-    cell.el.classList.add('selected');
+    cell.el?.classList.add('selected'); // 화면 밖이면 데코레이터가 복원
     selectionState.keys.add(key);
 
     const obj = objects.objects.get(key);

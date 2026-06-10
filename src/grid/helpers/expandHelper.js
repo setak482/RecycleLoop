@@ -1,6 +1,7 @@
 import { CELL_W } from '../../constants/config.js';
-import { buildCell } from './initGrid.js';
+import { createCellStates } from './initGrid.js';
 import { applySubdivisionMarkers } from './subdivisionHelper.js';
+import { updateVirtualWindow } from './virtualWindow.js';
 
 // 확장은 32열 단위로 — 4n/8n/16n/32n 모든 마디 경계와 정렬됩니다.
 export const EXPAND_UNIT = 32;
@@ -13,7 +14,8 @@ function roundUpToUnit(cols) {
 
 /**
  * 그리드 열 수를 targetCols 이상으로 늘립니다. (줄이지는 않음)
- * 새 열의 셀을 생성하고, 폭·마디선을 갱신합니다.
+ * 셀의 논리 상태만 추가하고, DOM은 가상 윈도가 화면에 들어오는 컬럼만
+ * 생성하므로 확장 자체는 수만 개 셀을 만들지 않아 매우 저렴합니다.
  *
  * @param {GridManager} grid
  * @param {number} targetCols - 최소로 필요한 열 수
@@ -25,18 +27,12 @@ export function expandColumns(grid, targetCols, maxCols = Infinity) {
   if (desired <= grid.cols) return false;
 
   const oldCols = grid.cols;
-  // 확장당 수천 개 셀이 추가되므로 fragment에 모아 한 번에 삽입합니다.
-  const fragment = document.createDocumentFragment();
-  for (let r = 0; r < grid.rows; r++) {
-    for (let c = oldCols; c < desired; c++) {
-      buildCell(fragment, grid.cells, r, c);
-    }
-  }
-  grid.world.appendChild(fragment);
+  createCellStates(grid.cells, grid.rows, desired, oldCols);
 
   grid.cols = desired;
   grid.world.style.gridTemplateColumns = `repeat(${desired}, ${CELL_W}px)`;
   applySubdivisionMarkers(grid, grid.subdivision);
+  updateVirtualWindow(grid); // 새 영역이 현재 화면과 겹치면 즉시 생성
   return true;
 }
 
