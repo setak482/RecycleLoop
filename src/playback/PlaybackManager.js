@@ -27,6 +27,11 @@ export class PlaybackManager {
     this._stopCol = null;
     this.subdivision = DEFAULT_SUB;
     this.masterVolume = 0;
+    this.onPlaybackStateChange = null;
+  }
+
+  setPlaybackStateCallback(callback) {
+    this.onPlaybackStateChange = callback;
   }
 
   init(gridManager) {

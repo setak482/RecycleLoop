@@ -1,0 +1,18 @@
+{
+  "id": "cling_glass",
+  "name": "유리병",
+  "role": "melody",
+  "category": "melody",
+  "color": "#a8d8ea",
+  "img": "/img/cling_glass.png",
+  "pitched": true,
+  "volume": 0,
+  "duration": 0.25,
+  "sample": {
+    "type": "sampler",
+    "notes": {
+      "C6": "/sound/cling_glass_C6.wav",
+      "C7": "/sound/cling_glass_C7.wav"
+    }
+  }
+}

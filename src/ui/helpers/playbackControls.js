@@ -31,6 +31,12 @@ export function setupPlaybackControls(playback, objects) {
     playback.setVolume?.(volume);
     if (volumeLabel) volumeLabel.textContent = `${volume} dB`;
   });
+
+  playback.setPlaybackStateCallback?.((state) => {
+    const isPlaying = state === 'started';
+    playBtn?.classList.toggle('playing', isPlaying);
+    document.getElementById('play-icon').textContent = isPlaying ? '⏹' : '▶';
+  });
 }
 
 export function setupFileControls(playback, objects, selection, clearInstrumentState = () => {}) {

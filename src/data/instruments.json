@@ -1,6 +1,7 @@
 {
   "instruments": [
     { "id": "blow_bottle", "name": "페트병 불기", "role": "melody", "category": "melody", "pitched": true },
+    { "id": "cling_glass", "name": "유리병", "role": "melody", "category": "melody", "pitched": true },
     { "id": "rest",        "name": "쉼표",   "role": "rest",   "category": "rest",   "pitched": false }
   ]
 }

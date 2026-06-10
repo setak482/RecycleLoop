@@ -25,5 +25,8 @@ export function initPlayheadHelper(playbackManager) {
  */
 export function movePlayheadHelper(playbackManager, col) {
   if (!playbackManager._playhead) return;
-  playbackManager._playhead.style.transform = `translateX(${col * CELL_W}px)`;
+  requestAnimationFrame(() => {
+    // translate3d를 사용하여 확실하게 GPU를 사용하도록 유도합니다.
+    playbackManager._playhead.style.transform = `translate3d(${col * CELL_W}px, 0, 0)`;
+  });
 }

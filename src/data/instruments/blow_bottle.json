@@ -1,6 +1,6 @@
 {
   "id": "blow_bottle",
-  "name": "페트병",
+  "name": "페트병 불기",
   "role": "melody",
   "category": "melody",
   "color": "#a8d8ea",
@@ -11,7 +11,8 @@
   "sample": {
     "type": "sampler",
     "notes": {
-      "C4": "/sound/blow_bottle.wav"
+      "C4": "/sound/blow_bottle_C4.wav",
+      "C5": "/sound/blow_bottle_C5.wav"
     }
   }
 }

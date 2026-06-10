@@ -43,7 +43,10 @@ export async function startHelper(playbackManager, objectManager) {
 
   playbackManager._loop = new Tone.Sequence((time) => {
     triggerColHelper(playbackManager, playbackManager._currentCol, objectManager, time);
-    playbackManager._movePlayhead(playbackManager._currentCol);
+    // playbackManager._movePlayhead(playbackManager._currentCol);
+    Tone.Draw.schedule(() => {
+      playbackManager._movePlayhead(playbackManager._currentCol);
+    }, time);
 
     if (playbackManager._stopPending && playbackManager._currentCol === playbackManager._stopCol) {
       playbackManager._stopPending = false;
@@ -59,6 +62,7 @@ export async function startHelper(playbackManager, objectManager) {
 
   playbackManager._loop.start(0);
   Tone.getTransport().start();
+  playbackManager.onPlaybackStateChange?.('started');
 }
 
 /**
@@ -72,14 +76,14 @@ export function stopHelper(playbackManager, { alignToBoundary = false } = {}) {
   const transport = playbackManager._Tone.getTransport();
   if (transport.state !== 'started') return;
 
-  if (alignToBoundary) {
-    playbackManager._stopPending = true;
-    playbackManager._stopCol = getStopBoundaryCol(
-      playbackManager._currentCol,
-      getMeasureInterval(playbackManager.subdivision)
-    );
-    return;
-  }
+  // if (alignToBoundary) {
+  //   playbackManager._stopPending = true;
+  //   playbackManager._stopCol = getStopBoundaryCol(
+  //     playbackManager._currentCol,
+  //     getMeasureInterval(playbackManager.subdivision)
+  //   );
+  //   return;
+  // }
 
   playbackManager._stopPending = false;
   playbackManager._stopCol = null;
@@ -88,4 +92,5 @@ export function stopHelper(playbackManager, { alignToBoundary = false } = {}) {
   transport.stop();
   transport.position = 0;
   playbackManager._movePlayhead(playbackManager._startCol);
+  playbackManager.onPlaybackStateChange?.('stopped');
 }
