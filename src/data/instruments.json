@@ -2,6 +2,7 @@
   "instruments": [
     { "id": "blow_bottle",  "name": "페트병 불기",   "role": "melody", "category": "melody", "pitched": true },
     { "id": "cling_glass",  "name": "유리병",        "role": "melody", "category": "melody", "pitched": true },
+    { "id": "squeeze_bottle", "name": "페트병 구기기", "role": "melody", "category": "melody", "pitched": false },
     { "id": "rest",         "name": "쉼표",          "role": "rest",   "category": "rest",   "pitched": false },
     { "id": "marker_start", "name": "중단점",        "role": "marker", "category": "marker", "pitched": false, "img": "/img/marker_start.svg" },
     { "id": "repeat_start", "name": "도돌이표 시작", "role": "marker", "category": "marker", "pitched": false, "img": "/img/repeat_start.svg" },
