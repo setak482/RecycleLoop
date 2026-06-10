@@ -26,14 +26,14 @@ export function createCell(worldElement, cellElement, rows, cols) {
   console.log("Cell Created.");
 }
 
-export function centerGrid(ctx) {
+export function centerGrid(manager) {
 // 가로 중앙, 세로는 C4 행이 화면 중간에 오도록
     const c4RowIndex = KEYS.findIndex(k => k.note === 'C4');
-    const x = (ctx.canvas.clientWidth  - ctx.cols * CELL_W) / 2;
-    const y = (ctx.canvas.clientHeight / 2) - (c4RowIndex * CELL_H);
-    ctx._offset.x = x;
-    ctx._offset.y = y;
-    ctx.world.style.transform = `translate(${x}px, ${y}px)`;
+    const x = (manager.canvas.clientWidth  - manager.cols * CELL_W) / 2;
+    const y = (manager.canvas.clientHeight / 2) - (c4RowIndex * CELL_H);
+    manager._offset.x = x;
+    manager._offset.y = y;
+    manager.world.style.transform = `translate(${x}px, ${y}px)`;
 
     console.log("Grid Centered.")
 }

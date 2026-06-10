@@ -3,6 +3,12 @@ import { KEYS } from '../constants/keys.js';
 import { setGridStyle, createCell, centerGrid } from './initGrid.js';
 import { initPan }  from './initPan.js';
 
+/**
+ * @class GridManager
+ * @description
+ * 그리드 렌더링과 셀 상태를 관리하는 클래스입니다.
+ * 캔버스 요소와 그리드 월드를 초기화하고 셀별 점유 상태를 추적합니다.
+ */
 export class GridManager {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
