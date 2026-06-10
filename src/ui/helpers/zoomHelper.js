@@ -32,7 +32,7 @@ export function attachZoomWheel(grid, indicator) {
 
   grid.canvas.addEventListener('wheel', e => {
     e.preventDefault();
-    grid.zoomBy(e.deltaY, e.clientX, e.clientY);
+    grid.zoomBy(e.deltaY);
     update(grid.scale * 100);
   });
 }

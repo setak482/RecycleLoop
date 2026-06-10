@@ -4,8 +4,10 @@ export function initPan(manager) {
     const DRAG_THRESHOLD = 6;
 
     manager._panMoved = false;
+    manager.selectionMode = false;
 
     manager.canvas.addEventListener('mousedown', e => {
+        if (manager.selectionMode) return;
         if (e.target.closest('.placed-object')) return;
         if (e.target.closest('.instrument-item')) return;
         dragging = true;

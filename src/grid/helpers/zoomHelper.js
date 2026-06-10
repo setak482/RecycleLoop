@@ -16,19 +16,24 @@ export function setZoom(manager, scale, focusX, focusY) {
   manager.scale = newScale;
 
   if (typeof focusX === 'number' && typeof focusY === 'number') {
-    const rect = manager.world.getBoundingClientRect();
-    const worldX = (focusX - rect.left - manager._offset.x) / prevScale;
-    const worldY = (focusY - rect.top - manager._offset.y) / prevScale;
-    const offsetX = focusX - rect.left - worldX * newScale;
-    const offsetY = focusY - rect.top - worldY * newScale;
+    const rect = manager.canvas.getBoundingClientRect();
+    const focusRelX = focusX - rect.left;
+    const focusRelY = focusY - rect.top;
+    const worldX = (focusRelX - manager._offset.x) / prevScale;
+    const worldY = (focusRelY - manager._offset.y) / prevScale;
+    const offsetX = focusRelX - worldX * newScale;
+    const offsetY = focusRelY - worldY * newScale;
     manager._setOffset(offsetX, offsetY);
   } else {
     applyTransform(manager);
   }
 }
 
-export function zoomBy(manager, deltaY, focusX, focusY) {
+export function zoomBy(manager, deltaY) {
   const direction = deltaY > 0 ? -1 : 1;
   const nextScale = manager.scale + direction * manager.scaleStep;
-  setZoom(manager, nextScale, focusX, focusY);
+  const rect = manager.canvas.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  setZoom(manager, nextScale, centerX, centerY);
 }

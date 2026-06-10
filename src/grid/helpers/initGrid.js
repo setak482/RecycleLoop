@@ -14,8 +14,6 @@ export function createCell(worldElement, cellElement, rows, cols) {
       const key  = `${c}-${r}`;
 
       cell.classList.add('grid-cell');
-      if (KEYS[r].isBlack) cell.classList.add('black-key-row');
-      if (KEYS[r].note.startsWith('C') && !KEYS[r].isBlack) cell.classList.add('c-row');
       cell.dataset.key  = key;
       cell.dataset.note = KEYS[r].note;
 
