@@ -1,7 +1,7 @@
 // src/main.js
-import { GridManager }     from './managers/GridManager.js';
-import { PlaybackManager } from './managers/PlaybackManager.js';
-import { ObjectManager }   from './managers/ObjectManager.js';
+import { GridManager }     from './grid/GridManager.js';
+import { PlaybackManager } from './playback/PlaybackManager.js';
+import { ObjectManager }   from './object/ObjectManager.js';
 
 // ── 패널 토글 ──────────────────────────────────────────
 document.querySelectorAll('.floating-panel').forEach(panel => {

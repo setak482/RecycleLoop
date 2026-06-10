@@ -1,7 +1,7 @@
 import { KEYS } from '../constants/keys.js';
 
-import { setGridStyle, createCell, centerGrid } from '../functions/grid/initGrid.js';
-import { initPan }  from '../functions/grid/initPan.js';
+import { setGridStyle, createCell, centerGrid } from './initGrid.js';
+import { initPan }  from './initPan.js';
 
 export class GridManager {
   constructor(canvasId) {

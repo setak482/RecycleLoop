@@ -1,5 +1,5 @@
-import { KEYS } from "../../constants/keys";
-import { CELL_H, CELL_W } from "../../constants/config";
+import { KEYS } from "../constants/keys";
+import { CELL_H, CELL_W } from "../constants/config";
 
 export function setGridStyle(worldElement, rows, cols){
     worldElement.style.gridTemplateColumns = `repeat(${cols}, ${CELL_W}px)`;
