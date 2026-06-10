@@ -67,17 +67,19 @@ export async function placeHelper(manager, id, cellKey, { preview = false } = {}
     });
 
     manager.grid.getCell(cellKey).el.appendChild(img);
-    img.classList.add('bounce-in');
-    img.addEventListener('animationend', () => {
-      img.classList.remove('bounce-in');
-    }, { once: true });
+    // 일괄 작업(불러오기 등) 중에는 수백 개 동시 애니메이션을 피합니다.
+    if (!manager.isBulk?.()) {
+      img.classList.add('bounce-in');
+      img.addEventListener('animationend', () => {
+        img.classList.remove('bounce-in');
+      }, { once: true });
+    }
 
     manager.grid.setOccupied(cellKey, true);
     manager.setObject(cellKey, { id, img, detail });
 
     manager.playback.register(detail);
-    manager.refreshDurationLines?.();
-    manager.playback.updateRange(manager);
+    manager.notifyChanged();
 
     if (preview) manager.playback.previewNote?.(cellKey, detail);
 }

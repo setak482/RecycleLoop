@@ -298,14 +298,14 @@ export class SelectionManager {
     const selectedKeys = [...this.selectionState.keys].filter(key => this.objects.objects.has(key));
     if (!selectedKeys.length) return false;
 
-    this.objects.history?.beginBatch();
+    this.objects.beginBulk();
     try {
       for (const key of selectedKeys) {
         this.objects.remove(key);
         await this.objects.place(id, key);
       }
     } finally {
-      this.objects.history?.endBatch();
+      this.objects.endBulk();
     }
 
     this.updateSelectionKeys(selectedKeys);
@@ -320,11 +320,11 @@ export class SelectionManager {
       return;
     }
 
-    this.objects.history?.beginBatch();
+    this.objects.beginBulk();
     try {
       selectedKeys.forEach(key => this.objects.remove(key));
     } finally {
-      this.objects.history?.endBatch();
+      this.objects.endBulk();
     }
     this.clearSelection();
     showToast(`${selectedKeys.length}개 삭제됨`);
@@ -343,11 +343,11 @@ export class SelectionManager {
   }
 
   async commitPaste() {
-    this.objects.history?.beginBatch();
+    this.objects.beginBulk();
     try {
       await commitPasteHelper(this.pasteState, this.grid, this.objects, showToast);
     } finally {
-      this.objects.history?.endBatch();
+      this.objects.endBulk();
     }
   }
 
@@ -360,12 +360,12 @@ export class SelectionManager {
   }
 
   async moveSelectionTo(baseCol, baseRow) {
-    this.objects.history?.beginBatch();
+    this.objects.beginBulk();
     let newKeys;
     try {
       newKeys = await moveSelectionToHelper(baseCol, baseRow, this.selectionState, this.objects, this.grid, showToast);
     } finally {
-      this.objects.history?.endBatch();
+      this.objects.endBulk();
     }
     if (newKeys) {
       this.updateSelectionKeys(newKeys);

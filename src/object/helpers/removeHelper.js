@@ -6,6 +6,5 @@ export function removeHelper(manager, cellKey){
     manager.grid.setOccupied(cellKey, false);
     manager.deleteObject(cellKey);
 
-    manager.refreshDurationLines?.();
-    manager.playback.updateRange(manager);
+    manager.notifyChanged();
 }

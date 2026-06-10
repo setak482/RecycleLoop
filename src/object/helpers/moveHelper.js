@@ -35,8 +35,7 @@ export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     manager.grid.setOccupied(toKey, true);
     manager.setObject(toKey, { ...obj, img: newImg });
 
-    manager.refreshDurationLines?.();
-    manager.playback.updateRange(manager);
+    manager.notifyChanged();
 
     if (preview) manager.playback.previewNote?.(toKey, obj.detail);
 }

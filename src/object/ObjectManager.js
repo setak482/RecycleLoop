@@ -20,6 +20,8 @@ export class ObjectManager {
     this.objects  = new Map();
     this.objectsByCol = new Map(); // col(number) → Map<cellKey, obj>
     this.history  = null;
+    this._bulkDepth = 0;
+    this._bulkDirty = false;
   }
 
   init(){
@@ -28,6 +30,40 @@ export class ObjectManager {
 
   setHistory(history) {
     this.history = history;
+  }
+
+  /**
+   * 일괄 작업(불러오기·붙여넣기·다중 삭제/이동·undo) 구간을 선언합니다.
+   * 구간 안에서는 배치/삭제마다 반복되던 지속선 재렌더와 재생 범위
+   * 재계산(O(N²)의 원인)을 멈추고, 종료 시 한 번만 수행합니다.
+   * 히스토리도 같은 구간을 하나의 undo 단위로 묶습니다.
+   */
+  beginBulk() {
+    this._bulkDepth += 1;
+    this.history?.beginBatch();
+  }
+
+  endBulk() {
+    this.history?.endBatch();
+    this._bulkDepth = Math.max(0, this._bulkDepth - 1);
+    if (this._bulkDepth === 0 && this._bulkDirty) {
+      this._bulkDirty = false;
+      this.notifyChanged();
+    }
+  }
+
+  isBulk() {
+    return this._bulkDepth > 0;
+  }
+
+  // 배치 상태 변경 후 파생 상태(지속선·재생 범위)를 갱신합니다.
+  notifyChanged() {
+    if (this._bulkDepth > 0) {
+      this._bulkDirty = true;
+      return;
+    }
+    renderDurationLines(this.grid, this.objects, this.playback.bpm);
+    this.playback.updateRange(this);
   }
 
   setObject(cellKey, obj) {
@@ -83,8 +119,7 @@ export class ObjectManager {
     });
     this.objects.clear();
     this.objectsByCol.clear();
-    renderDurationLines(this.grid, this.objects, this.playback.bpm);
-    this.playback.updateRange(this);
+    this.notifyChanged();
     this.history?.commit();
   }
 

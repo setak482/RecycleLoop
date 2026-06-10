@@ -73,22 +73,23 @@ export function setupFileControls(playback, objects, selection, grid, clearInstr
     clearInstrumentState();
     applyProjectSettings(project, playback, grid, objects);
 
-    // 저장된 오브젝트 중 현재 그리드 밖 좌표가 있으면 먼저 확장
+    // 가장 오른쪽 오브젝트 + 배치 버퍼까지 한 번에 확장해 두어
+    // 루프 도중 그리드 확장(셀 수천 개 생성 + 전체 레이아웃)을 막습니다.
     const maxCol = project.objects.reduce((max, { cell }) => {
       const col = parseInt(cell.split('-')[0], 10);
       return Number.isInteger(col) && col > max ? col : max;
     }, 0);
-    if (maxCol >= grid.cols) grid.ensureColumns(maxCol + 1);
+    grid.ensureColumnsForPlacement(maxCol);
 
-    // 불러오기 전체를 한 번의 undo 단위로 묶음
-    objects.history?.beginBatch();
+    // 불러오기 전체를 한 번의 undo 단위 + 한 번의 렌더 갱신으로 묶음
+    objects.beginBulk();
     try {
       objects.reset();
       for (const { cell, id } of project.objects) {
         if (grid.getCell(cell)) await objects.place(id, cell);
       }
     } finally {
-      objects.history?.endBatch();
+      objects.endBulk();
     }
 
     showToast(`불러오기 완료 (오브젝트 ${objects.getAll().length}개)`);

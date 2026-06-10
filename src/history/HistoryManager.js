@@ -75,6 +75,7 @@ export class HistoryManager {
 
   async _apply(snapshot) {
     this._applying = true;
+    this.objects.beginBulk(); // 복원 중 오브젝트마다 렌더 갱신 방지
     try {
       const target = new Map(snapshot.map(o => [o.key, o.id]));
       for (const [key, obj] of this.objects.getAll()) {
@@ -88,6 +89,7 @@ export class HistoryManager {
         await this.objects.place(id, key);
       }
     } finally {
+      this.objects.endBulk();
       this._applying = false;
     }
   }
