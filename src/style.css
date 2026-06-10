@@ -98,6 +98,35 @@ body {
   justify-content: center;
 }
 
+.control-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.action-btn {
+  flex: 1 1 auto;
+  min-width: 72px;
+  height: 40px;
+  border-radius: 14px;
+  border: none;
+  background: #d1d5db;
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.action-btn:hover {
+  background: #b3b9c4;
+}
+
+.action-btn:active {
+  transform: scale(0.96);
+}
+
 .play-btn:hover  { background: #3a7aee; }
 .play-btn:active { transform: scale(0.93); }
 
@@ -312,6 +341,11 @@ placed-object.dragging {
 
 .instrument-item:hover {
   background: rgba(0, 0, 0, 0.06);
+}
+
+.instrument-item.active {
+  background: rgba(76, 140, 255, 0.18);
+  border: 1px solid rgba(76, 140, 255, 0.35);
 }
 
 .instrument-item:active {

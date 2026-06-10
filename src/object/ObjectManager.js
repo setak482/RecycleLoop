@@ -30,6 +30,19 @@ export class ObjectManager {
     removeHelper(this, cellKey);
   }
 
+  reset() {
+    const keys = [...this.objects.keys()];
+    keys.forEach(key => {
+      const obj = this.objects.get(key);
+      if (!obj) return;
+      obj.img.remove();
+      this.grid.setOccupied(key, false);
+      this.playback.unregister(key);
+      this.objects.delete(key);
+    });
+    this.playback.updateRange(this);
+  }
+
   move(fromKey, toKey) {
     moveHelper(this, fromKey, toKey);
   }

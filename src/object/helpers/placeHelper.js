@@ -26,18 +26,6 @@ export async function placeHelper(manager, id, cellKey) {
     img.src = detail.img;
     img.alt = detail.name;
     img.classList.add('placed-object');
-    img.draggable = true;
-
-    img.addEventListener('dragstart', e => {
-        e.stopPropagation();
-        e.dataTransfer.setData('fromCell', cellKey);
-        e.dataTransfer.setData('instrumentId', id);
-        img.classList.add('dragging');
-    });
-
-    img.addEventListener('dragend', () => {
-        img.classList.remove('dragging');
-    });
 
     manager.grid.getCell(cellKey).el.appendChild(img);
     manager.grid.setOccupied(cellKey, true);

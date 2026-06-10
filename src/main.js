@@ -11,6 +11,9 @@ const grid     = new GridManager('grid-canvas');
 const playback = new PlaybackManager();
 const objects  = new ObjectManager(grid, playback);
 
+let selectedInstrumentId = null;
+let selectedInstrumentElement = null;
+
 grid.init();
 objects.init();
 playback.init(grid);
@@ -21,6 +24,21 @@ attachZoomWheel(grid, zoomIndicator);
 // UI 요소 및 이벤트 초기화 실행
 setupUI(playback, objects, grid);
 loadInstrumentPanel();
+
+grid.world.addEventListener('click', e => {
+  const cell = e.target.closest('.grid-cell');
+  if (!cell) return;
+
+  const key = cell.dataset.key;
+  if (objects.objects.has(key)) {
+    objects.remove(key);
+    return;
+  }
+
+  if (selectedInstrumentId) {
+    objects.place(selectedInstrumentId, key);
+  }
+});
 
 
 // ==========================================
@@ -59,6 +77,32 @@ function setupUI(playback, objects, grid) {
     playback.setBpm(bpm);
   });
 
+  // ── 저장 / 불러오기 / 초기화 버튼 ──
+  const saveBtn = document.getElementById('btn-save');
+  const loadBtn = document.getElementById('btn-load');
+  const resetBtn = document.getElementById('btn-reset');
+  const loadInput = document.getElementById('load-file-input');
+
+  saveBtn?.addEventListener('click', () => {
+    alert('저장 인터페이스만 지원합니다. 실제 저장 기능은 아직 구현되지 않았습니다.');
+  });
+
+  loadBtn?.addEventListener('click', () => {
+    loadInput?.click();
+  });
+
+  loadInput?.addEventListener('change', () => {
+    if (loadInput.files?.length > 0) {
+      alert('불러오기 인터페이스만 지원합니다. 실제 불러오기 기능은 아직 구현되지 않았습니다.');
+      loadInput.value = ''; // 선택 초기화
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    playback.stop();
+    objects.reset();
+  });
+
   // ── 박자(Subdivision) 라디오 버튼 제어 ──
   document.querySelectorAll('input[name="sub"]').forEach(radio => {
     radio.addEventListener('change', e => {
@@ -77,13 +121,22 @@ async function loadInstrumentPanel() {
   instruments.forEach(inst => {
     const item = document.createElement('div');
     item.classList.add('instrument-item');
-    item.setAttribute('draggable', true);
     item.dataset.id = inst.id;
     item.innerHTML = `<img src="/img/${inst.id}.png" alt="${inst.name}" /><span>${inst.name}</span>`;
-    
-    // 드래그 시작할 때 악기 ID를 전송 데이터에 세팅
-    item.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('instrumentId', inst.id);
+
+    item.addEventListener('click', () => {
+      if (selectedInstrumentId === inst.id) {
+        selectedInstrumentId = null;
+        selectedInstrumentElement?.classList.remove('active');
+        selectedInstrumentElement = null;
+      } else {
+        if (selectedInstrumentElement) {
+          selectedInstrumentElement.classList.remove('active');
+        }
+        selectedInstrumentId = inst.id;
+        selectedInstrumentElement = item;
+        item.classList.add('active');
+      }
     });
     
     list.appendChild(item);

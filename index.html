@@ -28,16 +28,21 @@
     <button class="panel-toggle">⚙️</button>
     <div class="panel-content">
 
-      <button id="btn-play" class="play-btn">
-        <span id="play-icon">▶</span>
-      </button>
+      <div class="control-buttons">
+        <button id="btn-play" class="play-btn">
+          <span id="play-icon">▶</span>
+        </button>
+        <button id="btn-save" class="action-btn">저장</button>
+        <button id="btn-load" class="action-btn">불러오기</button>
+        <button id="btn-reset" class="action-btn">초기화</button>
+      </div>
 
       <div class="bpm-control">
         <span id="bpm-label">120 BPM</span>
         <input id="btn-bpm" type="range" min="60" max="200" value="120" />
       </div>
 
-        <div class="subdivision-control">
+      <div class="subdivision-control">
         <label>
           <input type="radio" name="sub" value="4n"> ♩
         </label>
@@ -48,6 +53,7 @@
           <input type="radio" name="sub" value="16n"> ♬
         </label>
       </div>
+      <input id="load-file-input" type="file" accept="application/json" hidden />
 
     </div>
   </div>
