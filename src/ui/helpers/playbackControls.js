@@ -38,6 +38,14 @@ export function setupPlaybackControls(playback, objects) {
   });
 }
 
+// 불러오기 시 한 번에 배치하는 오브젝트 수. 이 수만큼 처리한 뒤
+// 프레임에 양보해 브라우저가 그리기·입력 처리를 할 수 있게 합니다.
+const LOAD_CHUNK_SIZE = 60;
+
+function nextFrame() {
+  return new Promise(resolve => requestAnimationFrame(() => resolve()));
+}
+
 export function setupFileControls(playback, objects, selection, grid, clearInstrumentState = () => {}) {
   const saveBtn = document.getElementById('btn-save');
   const loadBtn = document.getElementById('btn-load');
@@ -55,10 +63,11 @@ export function setupFileControls(playback, objects, selection, grid, clearInstr
     loadInput?.click();
   });
 
+  let loading = false;
   loadInput?.addEventListener('change', async () => {
     const file = loadInput.files?.[0];
     loadInput.value = '';
-    if (!file) return;
+    if (!file || loading) return;
 
     let project;
     try {
@@ -68,31 +77,42 @@ export function setupFileControls(playback, objects, selection, grid, clearInstr
       return;
     }
 
-    playback.stop();
-    selection.reset();
-    clearInstrumentState();
-    applyProjectSettings(project, playback, grid, objects);
-
-    // 가장 오른쪽 오브젝트 + 배치 버퍼까지 한 번에 확장해 두어
-    // 루프 도중 그리드 확장(셀 수천 개 생성 + 전체 레이아웃)을 막습니다.
-    const maxCol = project.objects.reduce((max, { cell }) => {
-      const col = parseInt(cell.split('-')[0], 10);
-      return Number.isInteger(col) && col > max ? col : max;
-    }, 0);
-    grid.ensureColumnsForPlacement(maxCol);
-
-    // 불러오기 전체를 한 번의 undo 단위 + 한 번의 렌더 갱신으로 묶음
-    objects.beginBulk();
+    loading = true;
     try {
-      objects.reset();
-      for (const { cell, id } of project.objects) {
-        if (grid.getCell(cell)) await objects.place(id, cell);
-      }
-    } finally {
-      objects.endBulk();
-    }
+      playback.stop();
+      selection.reset();
+      clearInstrumentState();
+      applyProjectSettings(project, playback, grid, objects);
 
-    showToast(`불러오기 완료 (오브젝트 ${objects.getAll().length}개)`);
+      // 가장 오른쪽 오브젝트 + 배치 버퍼까지 한 번에 확장 (루프 도중 확장 방지)
+      const maxCol = project.objects.reduce((max, { cell }) => {
+        const col = parseInt(cell.split('-')[0], 10);
+        return Number.isInteger(col) && col > max ? col : max;
+      }, 0);
+      grid.ensureColumnsForPlacement(maxCol);
+
+      // 불러오기 전체를 한 번의 undo 단위 + 한 번의 렌더 갱신으로 묶고,
+      // 청크마다 프레임에 양보해 브라우저가 멈추지 않게 합니다.
+      objects.beginBulk();
+      try {
+        objects.reset();
+        const items = project.objects;
+        for (let i = 0; i < items.length; i += 1) {
+          const { cell, id } = items[i];
+          if (grid.getCell(cell)) await objects.place(id, cell);
+          if ((i + 1) % LOAD_CHUNK_SIZE === 0 && i + 1 < items.length) {
+            showToast(`불러오는 중... ${i + 1}/${items.length}`);
+            await nextFrame();
+          }
+        }
+      } finally {
+        objects.endBulk();
+      }
+
+      showToast(`불러오기 완료 (오브젝트 ${objects.getAll().length}개)`);
+    } finally {
+      loading = false;
+    }
   });
 
   resetBtn?.addEventListener('click', () => {
