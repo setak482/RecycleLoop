@@ -22,7 +22,9 @@
     <button class="panel-toggle">🎵</button>
     <div class="panel-content">
       <p class="panel-label">악기</p>
+      <input id="instrument-search" type="search" placeholder="악기 검색" autocomplete="off" />
       <div id="instrument-list"></div>  <!-- 여기에 동적 렌더링 -->
+      <p id="instrument-empty" class="instrument-empty">검색 결과가 없습니다</p>
     </div>
   </div>
 
@@ -39,6 +41,7 @@
         <button id="btn-save" class="action-btn">저장</button>
         <button id="btn-load" class="action-btn">불러오기</button>
         <button id="btn-reset" class="action-btn">초기화</button>
+        <button id="btn-grid" class="action-btn">그리드 끄기</button>
       </div>
 
       <div class="bpm-control">

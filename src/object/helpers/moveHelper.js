@@ -1,3 +1,5 @@
+import { positionObjectAt } from './objectDomHelper.js';
+
 export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     if (fromKey === toKey) return;
 
@@ -28,8 +30,9 @@ export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     });
 
     obj.img.remove();
-    // 화면 밖 셀이면 가상 윈도 생성 시 다시 붙습니다.
-    manager.grid.getCell(toKey)?.el?.appendChild(newImg);
+    // 셀 div가 없으므로 월드 좌표에 직접 배치
+    positionObjectAt(newImg, toKey);
+    manager.grid.world.appendChild(newImg);
 
     manager.grid.setOccupied(fromKey, false);
     manager.deleteObject(fromKey);

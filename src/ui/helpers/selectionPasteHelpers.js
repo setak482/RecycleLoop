@@ -1,3 +1,5 @@
+import { positionObjectAt } from '../../object/helpers/objectDomHelper.js';
+
 export function startPastePreview(clipboard, pasteState) {
   pasteState.active = true;
   pasteState.items = clipboard ? [...clipboard] : [];
@@ -21,13 +23,13 @@ export function updatePastePreview(targetKey, pasteState, grid) {
   const [baseCol, baseRow] = parseCellKey(targetKey);
   pasteState.items.forEach(item => {
     const targetKeyInner = `${baseCol + item.offset.col}-${baseRow + item.offset.row}`;
-    const targetCell = grid.getCell(targetKeyInner);
-    if (!targetCell?.el) return; // 화면 밖 셀에는 미리보기 생략
+    if (!grid.getCell(targetKeyInner)) return;
     const previewImg = document.createElement('img');
     previewImg.src = item.src;
     previewImg.alt = item.alt;
     previewImg.classList.add('placed-object', 'paste-preview-object');
-    targetCell.el.appendChild(previewImg);
+    positionObjectAt(previewImg, targetKeyInner);
+    grid.world.appendChild(previewImg);
     pasteState.previewNodes.push(previewImg);
   });
 }

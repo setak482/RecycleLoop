@@ -1,9 +1,9 @@
 import { KEYS } from '../constants/keys.js';
-import { COLS, MAX_COLS } from '../constants/config.js';
+import { COLS, MAX_COLS, CELL_W, CELL_H } from '../constants/config.js';
 
-import { setGridStyle, createCellStates, centerGrid } from './helpers/initGrid.js';
+import { createCellStates, initBackgroundCanvas, centerGrid } from './helpers/initGrid.js';
+import { renderGrid } from './helpers/renderHelper.js';
 import { expandColumns, ensureColumnsForPlacement } from './helpers/expandHelper.js';
-import { updateVirtualWindow, syncMaterializedCells } from './helpers/virtualWindow.js';
 import { initPan }  from './helpers/initPan.js';
 import { applyTransform, setZoom, zoomBy } from './helpers/zoomHelper.js';
 import { applySubdivisionMarkers } from './helpers/subdivisionHelper.js';
@@ -13,13 +13,16 @@ import { createRowLabels, updateRowLabelTransform } from './helpers/labelHelper.
  * @class GridManager
  * @description
  * 그리드 렌더링과 셀 상태를 관리하는 클래스입니다.
- * 캔버스 요소와 그리드 월드를 초기화하고 셀별 점유 상태를 추적합니다.
+ * 셀은 DOM 없이 상태(Map)로만 관리하고, 그리드 선과 셀 하이라이트는
+ * 뷰포트 크기의 배경 캔버스에 보이는 영역만 그립니다.
+ * (셀 DOM이 없으므로 화면 밖 셀의 시각 상태 복원·LOD 같은
+ * 가상 윈도 보조 장치 없이도 팬/줌/확장 비용이 일정합니다.)
  */
 export class GridManager {
   constructor(canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.world  = document.getElementById('grid-world');
-    this.cells  = new Map();   // "col-row" → { el, occupied, note }
+    this.cells  = new Map();   // "col-row" → { occupied, note }
     this._offset = { x: 0, y: 0 };
 
     // 줌 및 스케일 관련 초기값
@@ -28,35 +31,48 @@ export class GridManager {
     this.maxScale = 2.0;
     this.scaleStep = 0.1;
 
-    // 초기 그리드 크기 (행은 키 수에 맞춰 고정, 열은 config.COLS로 관리)
+    // 초기 그리드 크기 (행은 키 수에 맞춰 고정, 열은 동적으로 확장됨)
     this.rows = KEYS.length;
     this.cols = COLS;
     this.labelWidth = 64;
     // 기본 분할 단위 설정
     this.subdivision = '16n';
+    // 그리드 선 표시 여부 (토글 버튼으로 제어)
+    this.showGridLines = true;
 
-    // 가상 윈도 렌더링: 현재 DOM이 존재하는 컬럼 범위 [matStart, matEnd)
-    this.matStart = 0;
-    this.matEnd = 0;
-    // 셀이 다시 화면에 들어올 때 시각 상태를 복원하는 콜백 (key, el)
-    this.cellDecorators = [];
-    // cellKey → 배치된 오브젝트 (ObjectManager가 연결)
-    this.objectLookup = null;
+    // 캔버스에 그리는 셀 시각 상태 (셀 div의 class 토글 대체)
+    this.occupiedKeys = new Set();
+    this.marks = {
+      selected:    new Set(),
+      movePreview: new Set(),
+      duration:    new Set(),
+      hover:       new Set(),
+    };
+
+    this._bg = null;            // { canvas, ctx, dpr }
+    this._renderQueued = false;
   }
-
-  // dynamic grid extension removed
 
   _setOffset(x, y) {
     this._offset = { x, y };
     this._applyTransform();
   }
 
-  // 브라우저가 mousemove/wheel을 이미 프레임 단위로 정렬해 주므로
-  // 추가 rAF 배칭 없이 바로 씁니다 (배칭은 한 프레임 지연만 더함).
   _applyTransform() {
     applyTransform(this);
     updateRowLabelTransform(this);
-    updateVirtualWindow(this);
+    this.requestRender();
+  }
+
+  // rAF로 배칭된 배경 캔버스 다시 그리기
+  // (mark()처럼 셀 단위로 여러 번 호출되는 경로를 한 프레임에 합칩니다)
+  requestRender() {
+    if (this._renderQueued) return;
+    this._renderQueued = true;
+    requestAnimationFrame(() => {
+      this._renderQueued = false;
+      renderGrid(this);
+    });
   }
 
   setZoom(scale, focusX, focusY) {
@@ -67,19 +83,30 @@ export class GridManager {
     zoomBy(this, deltaY, focusX, focusY);
   }
 
+  // 셀 div가 없으므로 월드 크기를 직접 지정 (오브젝트/플레이헤드 배치 기준)
+  _syncWorldSize() {
+    this.world.style.width  = `${this.cols * CELL_W}px`;
+    this.world.style.height = `${this.rows * CELL_H}px`;
+  }
+
   init() {
-    setGridStyle(this.world, this.rows, this.cols);
+    this._syncWorldSize();
     createCellStates(this.cells, this.rows, this.cols);
+    initBackgroundCanvas(this);
     createRowLabels(this);
     initPan(this);
     centerGrid(this);
     applySubdivisionMarkers(this, this.subdivision);
-    // 창 크기가 바뀌면 보이는 컬럼 범위도 달라집니다.
-    window.addEventListener('resize', () => this._applyTransform());
   }
 
   setSubdivision(subdivision) {
     applySubdivisionMarkers(this, subdivision);
+  }
+
+  toggleGridLines() {
+    this.showGridLines = !this.showGridLines;
+    this.requestRender();
+    return this.showGridLines;
   }
 
   // 오브젝트 배치 시 뒤쪽에 빈 마디를 확보하도록 그리드를 늘립니다.
@@ -92,9 +119,18 @@ export class GridManager {
     return expandColumns(this, minCols, MAX_COLS);
   }
 
-  // 저화질 모드에서 새로 점유된 셀의 DOM을 보충합니다 (배치/이동 후 호출).
-  syncMaterialized() {
-    syncMaterializedCells(this);
+  /**
+   * 화면 좌표 → 셀 키 변환 (셀 div 히트테스트 대체)
+   * @returns {string|null} "col-row" 또는 그리드 밖이면 null
+   */
+  cellKeyFromPoint(clientX, clientY) {
+    const rect = this.canvas.getBoundingClientRect();
+    const worldX = (clientX - rect.left - this.labelWidth - this._offset.x) / this.scale;
+    const worldY = (clientY - rect.top - this._offset.y) / this.scale;
+    const col = Math.floor(worldX / CELL_W);
+    const row = Math.floor(worldY / CELL_H);
+    if (col < 0 || row < 0 || col >= this.cols || row >= this.rows) return null;
+    return `${col}-${row}`;
   }
 
   getCell(key)           { return this.cells.get(key); }
@@ -103,7 +139,26 @@ export class GridManager {
     const cell = this.cells.get(key);
     if (!cell) return;
     cell.occupied = bool;
-    cell.el?.classList.toggle('occupied', bool); // el은 화면 밖이면 null
+    if (bool) this.occupiedKeys.add(key);
+    else this.occupiedKeys.delete(key);
+    this.requestRender();
   }
-  highlight(key, bool)   { this.cells.get(key)?.el?.classList.toggle('highlight', bool); }
+
+  // 셀 시각 상태 마킹 (selected / movePreview / duration / hover)
+  mark(type, key, bool) {
+    const set = this.marks[type];
+    if (!set) return;
+    if (bool) set.add(key);
+    else set.delete(key);
+    this.requestRender();
+  }
+
+  clearMarks(type) {
+    const set = this.marks[type];
+    if (!set || !set.size) return;
+    set.clear();
+    this.requestRender();
+  }
+
+  highlight(key, bool) { this.mark('hover', key, bool); }
 }

@@ -1,5 +1,5 @@
 import { showToast } from './Toast.js';
-import { setupFloatingPanels, setupSubdivisionControls, preventControlFocus } from './helpers/uiPanelHelpers.js';
+import { setupFloatingPanels, setupSubdivisionControls, setupGridToggle, preventControlFocus } from './helpers/uiPanelHelpers.js';
 import { setupPlaybackControls, setupFileControls } from './helpers/playbackControls.js';
 import { setupHistoryControls } from './helpers/historyControls.js';
 import { loadInstrumentPanel } from './helpers/instrumentPanel.js';
@@ -17,6 +17,7 @@ export function setupUI(playback, objects, selection, grid, history) {
     selectedInstrumentElement = null;
   });
   setupSubdivisionControls(playback, grid, objects);
+  setupGridToggle(grid);
   setupGridPlacement(grid, objects, selection, () => selectedInstrumentId);
   if (history) setupHistoryControls(history, selection);
   preventControlFocus();

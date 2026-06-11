@@ -5,12 +5,12 @@ export function setupGridPlacement(grid, objects, selection, getSelectedInstrume
       return;
     }
 
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
+    const key = grid.cellKeyFromPoint(e.clientX, e.clientY);
+    if (!key) return;
 
     if (selection.isPasteActive()) {
       e.preventDefault();
-      await selection.commitPasteAt(cell.dataset.key);
+      await selection.commitPasteAt(key);
       return;
     }
 
@@ -18,7 +18,6 @@ export function setupGridPlacement(grid, objects, selection, getSelectedInstrume
       return;
     }
 
-    const key = cell.dataset.key;
     if (objects.objects.has(key)) {
       objects.remove(key);
       return;

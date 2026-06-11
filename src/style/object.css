@@ -1,7 +1,6 @@
 .placed-object {
+  /* left/top은 월드 좌표(셀 중앙)로 인라인 지정 (objectDomHelper.js) */
   position: absolute;
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
   width:  calc(var(--cell-w) + 8px);
   height: calc(var(--cell-h) + 8px);

@@ -26,8 +26,6 @@ export class ObjectManager {
 
   init(){
     initHelper(this);
-    // 가상 윈도가 화면 밖에 있던 셀을 다시 만들 때 배치 이미지를 복원하도록 연결
-    this.grid.objectLookup = (key) => this.objects.get(key);
   }
 
   setHistory(history) {
@@ -64,7 +62,6 @@ export class ObjectManager {
       this._bulkDirty = true;
       return;
     }
-    this.grid.syncMaterialized?.(); // 저화질 모드 새 점유 셀 DOM 보충
     renderDurationLines(this.grid, this.objects, this.playback.bpm);
     this.playback.updateRange(this);
   }

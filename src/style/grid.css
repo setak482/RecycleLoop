@@ -16,35 +16,21 @@
   outline-offset: -6px;
 }
 
+#grid-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 #grid-world {
   position: absolute;
-  display: grid;
   transform-origin: top left;
   transform: scale(1) translate(0px, 0px);
   transition: none;
-  --bar-w: 640px; /* 한 마디 폭 (subdivisionHelper가 갱신) */
   /* 주의: 여기에 will-change를 걸면 거대한 그리드 전체가 합성 레이어로
      승격되어 GPU 메모리·래스터 비용이 폭증합니다 (열 확장 시 더 심각). */
-}
-
-/* 저화질(LOD) 모드: 축소 시 빈 격자 셀 DOM 대신 배경 패턴으로 격자와
-   마디선을 그립니다. 셀 DOM은 오브젝트가 놓인 칸만 존재합니다. */
-#grid-world.lod-low {
-  background-image:
-    /* 마디선 (진한 세로선, 한 마디 간격) */
-    repeating-linear-gradient(90deg,
-      rgba(12, 64, 150, 0.24) 0 1px, transparent 1px var(--bar-w)),
-    /* 세로 격자선 (한 칸 간격) */
-    repeating-linear-gradient(90deg,
-      rgba(0, 0, 0, 0.05) 0 1px, transparent 1px var(--cell-w)),
-    /* 가로 격자선 (한 행 간격) */
-    repeating-linear-gradient(0deg,
-      rgba(0, 0, 0, 0.05) 0 1px, transparent 1px var(--cell-h));
-}
-
-/* 저화질 모드에서는 개별 셀 보더를 끄고(배경이 대신 그림) 점유 칸만 강조 */
-#grid-world.lod-low .grid-cell {
-  border: none;
 }
 
 #grid-labels {
@@ -72,51 +58,8 @@
   background: transparent;
 }
 
-.grid-cell {
-  width:  var(--cell-w);
-  height: var(--cell-h);
-  position: relative;
-  box-sizing: border-box;
-  border-right:  1px solid rgba(0,0,0,0.04);
-  border-bottom: 1px solid rgba(0,0,0,0.04);
-  /* 셀 내부 변화가 그리드 전체 레이아웃 계산으로 번지지 않도록 격리 */
-  contain: layout style;
-}
-
-/* border 두께를 바꾸면 셀 내부 기준점이 밀려 블록이 미세하게 이동하므로
-   레이아웃에 영향 없는 box-shadow로 선을 그립니다. */
-.grid-cell.bar-line {
-  box-shadow: inset -2px 0 0 rgba(12, 64, 150, 0.24);
-}
-
-.grid-cell.duration-line {
-  box-shadow: inset -2px 0 0 rgba(255, 160, 0, 0.8);
-  background: rgba(255, 160, 0, 0.08);
-}
-
-.grid-cell.highlight {
-  background: rgba(80, 140, 255, 0.25);
-}
-
-.grid-cell.occupied {
-  background: rgba(80, 140, 255, 0.08);
-}
-
-.grid-cell.selected {
-  background: rgba(76, 140, 255, 0.18);
-}
-
-.grid-cell.move-preview {
-  background: rgba(34, 197, 94, 0.22);
-}
-
-.grid-cell[draggable="true"] {
-  cursor: grab;
-}
-
-.grid-cell[draggable="true"]:active {
-  cursor: grabbing;
-}
+/* 셀 단위 시각 효과(bar-line, duration-line, highlight, occupied,
+   selected, move-preview)는 배경 캔버스(renderHelper.js)에서 그립니다. */
 
 #playhead {
   position: absolute;

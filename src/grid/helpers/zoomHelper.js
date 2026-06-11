@@ -1,3 +1,5 @@
+import { KEYS } from '../../constants/keys.js';
+
 export function applyTransform(manager) {
   manager.world.style.transform = `translate(${manager._offset.x}px, ${manager._offset.y}px) scale(${manager.scale})`;
 }
@@ -23,7 +25,6 @@ export function setZoom(manager, scale, focusX, focusY) {
     const offsetY = focusRelY - worldY * newScale;
     manager._setOffset(offsetX, offsetY);
   } else {
-    // _applyTransform을 거쳐야 가상 윈도(보이는 컬럼 범위)도 갱신됩니다.
     manager._applyTransform();
   }
 }

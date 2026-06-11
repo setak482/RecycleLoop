@@ -7,6 +7,16 @@ export function setupFloatingPanels() {
   });
 }
 
+export function setupGridToggle(grid) {
+  const btn = document.getElementById('btn-grid');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    const visible = grid.toggleGridLines();
+    btn.textContent = visible ? '그리드 끄기' : '그리드 켜기';
+  });
+}
+
 /**
  * 패널 컨트롤이 키보드 포커스를 가져가지 않게 막습니다.
  * 버튼에 포커스가 남으면 Space(선택 모드 토글)가 버튼을 다시 누르는 문제가 생깁니다.
