@@ -53,9 +53,24 @@ export class GridManager {
     this._renderQueued = false;
   }
 
+  // _setOffset(x, y) {
+  //   this._offset = { x, y };
+  //   this._applyTransform();
+  // }
   _setOffset(x, y) {
-    this._offset = { x, y };
-    this._applyTransform();
+      const worldW = this.cols * CELL_W * this.scale;
+      const worldH = this.rows * CELL_H * this.scale;
+      const canvasW = this.canvas.clientWidth - this.labelWidth; // 라벨 영역 제외
+      const canvasH = this.canvas.clientHeight;
+
+      const minX = Math.min(0, canvasW - worldW);
+      const minY = Math.min(0, canvasH - worldH);
+
+      this._offset = {
+          x: Math.max(minX, Math.min(0, x)),
+          y: Math.max(minY, Math.min(0, y)),
+      };
+      this._applyTransform();
   }
 
   _applyTransform() {
