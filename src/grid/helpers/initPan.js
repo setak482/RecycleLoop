@@ -36,6 +36,4 @@ export function initPan(manager) {
         dragging = false;
         manager.canvas.classList.remove('panning');
     });
-
-    console.log('Pan Initialized.')
 }

@@ -3,9 +3,10 @@ function createInstrumentItem(inst, selectInstrument) {
   item.classList.add('instrument-item');
   item.dataset.id = inst.id;
   item.dataset.name = inst.name;
-  item.innerHTML = `<img src="/img/${inst.id}.png" alt="${inst.name}" /><span>${inst.name}</span>`;
+  const iconSrc = inst.img ?? `/img/${inst.id}.png`;
+  item.innerHTML = `<img src="${iconSrc}" alt="${inst.name}" /><span>${inst.name}</span>`;
 
-  item.addEventListener('click', () => selectInstrument(inst.id, item));
+  item.addEventListener('click', () => selectInstrument(inst.id, item, inst));
   return item;
 }
 
@@ -16,7 +17,7 @@ function createInstrumentItem(inst, selectInstrument) {
  * 악기를 늘릴 때 JSON만 수정하면 됩니다.
  */
 export async function loadInstrumentPanel(selectInstrument) {
-  const response = await fetch('/src/data/instruments.json');
+  const response = await fetch('/data/instruments.json');
   const { instruments, categories = [] } = await response.json();
   const list = document.getElementById('instrument-list');
   list.innerHTML = '';
@@ -28,19 +29,21 @@ export async function loadInstrumentPanel(selectInstrument) {
     if (!categoryNames.has(cat)) categoryNames.set(cat, cat);
   });
 
+  const fragment = document.createDocumentFragment();
   const sections = new Map();
   categoryNames.forEach((name, id) => {
     const section = document.createElement('div');
     section.className = 'instrument-section';
     section.innerHTML = `<p class="instrument-category">${name}</p>`;
     sections.set(id, section);
-    list.appendChild(section);
+    fragment.appendChild(section);
   });
 
   instruments.forEach(inst => {
     const item = createInstrumentItem(inst, selectInstrument);
     sections.get(inst.category ?? 'etc').appendChild(item);
   });
+  list.appendChild(fragment);
 
   setupInstrumentSearch(list);
 }

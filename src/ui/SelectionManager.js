@@ -291,6 +291,25 @@ export class SelectionManager {
     showToast('복사됨. 붙여넣을 위치로 이동 후 클릭하세요.');
   }
 
+  async changeSelectionInstrument(id) {
+    const selectedKeys = [...this.selectionState.keys].filter(key => this.objects.objects.has(key));
+    if (!selectedKeys.length) return false;
+
+    this.objects.beginBulk();
+    try {
+      for (const key of selectedKeys) {
+        this.objects.remove(key);
+        await this.objects.place(id, key);
+      }
+    } finally {
+      this.objects.endBulk();
+    }
+
+    this.updateSelectionKeys(selectedKeys);
+    showToast(`${selectedKeys.length}개 악기 변경됨`);
+    return true;
+  }
+
   deleteSelection() {
     const selectedKeys = [...this.selectionState.keys].filter(key => this.objects.objects.has(key));
     if (!selectedKeys.length) {
@@ -298,7 +317,12 @@ export class SelectionManager {
       return;
     }
 
-    selectedKeys.forEach(key => this.objects.remove(key));
+    this.objects.beginBulk();
+    try {
+      selectedKeys.forEach(key => this.objects.remove(key));
+    } finally {
+      this.objects.endBulk();
+    }
     this.clearSelection();
     showToast(`${selectedKeys.length}개 삭제됨`);
   }
@@ -316,7 +340,12 @@ export class SelectionManager {
   }
 
   async commitPaste() {
-    await commitPasteHelper(this.pasteState, this.grid, this.objects, showToast);
+    this.objects.beginBulk();
+    try {
+      await commitPasteHelper(this.pasteState, this.grid, this.objects, showToast);
+    } finally {
+      this.objects.endBulk();
+    }
   }
 
   getMoveItems() {
@@ -328,7 +357,13 @@ export class SelectionManager {
   }
 
   async moveSelectionTo(baseCol, baseRow) {
-    const newKeys = await moveSelectionToHelper(baseCol, baseRow, this.selectionState, this.objects, this.grid, showToast);
+    this.objects.beginBulk();
+    let newKeys;
+    try {
+      newKeys = await moveSelectionToHelper(baseCol, baseRow, this.selectionState, this.objects, this.grid, showToast);
+    } finally {
+      this.objects.endBulk();
+    }
     if (newKeys) {
       this.updateSelectionKeys(newKeys);
     }

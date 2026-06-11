@@ -1,0 +1,17 @@
+{
+  "id": "squeeze_bottle",
+  "name": "페트병 구기기",
+  "role": "melody",
+  "category": "melody",
+  "color": "#a8d8ea",
+  "img": "/img/squeeze_bottle.png",
+  "pitched": false,
+  "volume": 0,
+  "duration": 0.85,
+  "sample": {
+    "type": "sampler",
+    "notes": {
+      "C4": "/sound/squeeze_bottle.wav"
+    }
+  }
+}

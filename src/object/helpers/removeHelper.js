@@ -4,9 +4,7 @@ export function removeHelper(manager, cellKey){
 
     obj.img.remove();
     manager.grid.setOccupied(cellKey, false);
-    manager.objects.delete(cellKey);
+    manager.deleteObject(cellKey);
 
-    manager.playback.unregister(cellKey);
-    manager.refreshDurationLines?.();
-    manager.playback.updateRange(manager);
+    manager.notifyChanged();
 }

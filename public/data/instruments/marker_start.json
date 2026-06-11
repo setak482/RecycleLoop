@@ -1,0 +1,11 @@
+{
+  "id": "marker_start",
+  "name": "시작점",
+  "role": "marker",
+  "category": "marker",
+  "marker": "start",
+  "color": "#10b981",
+  "img": "/img/marker_start.svg",
+  "pitched": false,
+  "sample": null
+}

@@ -14,10 +14,3 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
-
-@keyframes bounce {
-  0%   { transform: translate(-50%, -50%) scale(1); }
-  30%  { transform: translate(-50%, -60%) scale(1.2); }
-  60%  { transform: translate(-50%, -45%) scale(0.95); }
-  100% { transform: translate(-50%, -50%) scale(1); }
-}

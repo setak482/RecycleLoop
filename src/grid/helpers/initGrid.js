@@ -1,14 +1,17 @@
 import { KEYS } from "../../constants/keys";
 import { CELL_H, CELL_W } from "../../constants/config";
 
-// 셀 상태만 생성 (DOM 없음) — 셀당 div를 만들던 방식을 대체
-export function initCellState(manager) {
-  for (let r = 0; r < manager.rows; r++) {
-    for (let c = 0; c < manager.cols; c++) {
-      manager.cells.set(`${c}-${r}`, { occupied: false, note: KEYS[r].note });
+/**
+ * 셀의 논리 상태만 Map에 채웁니다 (DOM 없음).
+ * startCol부터 증분 생성할 수 있어 동적 확장(expandHelper)에서 재사용합니다.
+ */
+export function createCellStates(cellMap, rows, cols, startCol = 0) {
+  for (let r = 0; r < rows; r++) {
+    const note = KEYS[r].note;
+    for (let c = startCol; c < cols; c++) {
+      cellMap.set(`${c}-${r}`, { occupied: false, note });
     }
   }
-  console.log("Cell State Created.");
 }
 
 // 그리드 선/하이라이트를 그릴 배경 캔버스 생성 (뷰포트 크기 고정)
@@ -26,8 +29,8 @@ export function initBackgroundCanvas(manager) {
     manager.requestRender();
   };
   resize();
+  // 창 크기가 바뀌면 캔버스 해상도와 보이는 셀 범위를 다시 맞춥니다.
   window.addEventListener('resize', resize);
-  console.log("Background Canvas Created.");
 }
 
 export function centerGrid(manager) {
@@ -40,6 +43,4 @@ export function centerGrid(manager) {
   manager._offset.x = x;
   manager._offset.y = y;
   manager._applyTransform();
-
-  console.log('Grid Centered.')
 }

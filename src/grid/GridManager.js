@@ -1,8 +1,9 @@
 import { KEYS } from '../constants/keys.js';
-import { COLS, CELL_W, CELL_H } from '../constants/config.js';
+import { COLS, MAX_COLS, CELL_W, CELL_H } from '../constants/config.js';
 
-import { initCellState, initBackgroundCanvas, centerGrid } from './helpers/initGrid.js';
+import { createCellStates, initBackgroundCanvas, centerGrid } from './helpers/initGrid.js';
 import { renderGrid } from './helpers/renderHelper.js';
+import { expandColumns, ensureColumnsForPlacement } from './helpers/expandHelper.js';
 import { initPan }  from './helpers/initPan.js';
 import { applyTransform, setZoom, zoomBy } from './helpers/zoomHelper.js';
 import { applySubdivisionMarkers } from './helpers/subdivisionHelper.js';
@@ -14,6 +15,8 @@ import { createRowLabels, updateRowLabelTransform } from './helpers/labelHelper.
  * 그리드 렌더링과 셀 상태를 관리하는 클래스입니다.
  * 셀은 DOM 없이 상태(Map)로만 관리하고, 그리드 선과 셀 하이라이트는
  * 뷰포트 크기의 배경 캔버스에 보이는 영역만 그립니다.
+ * (셀 DOM이 없으므로 화면 밖 셀의 시각 상태 복원·LOD 같은
+ * 가상 윈도 보조 장치 없이도 팬/줌/확장 비용이 일정합니다.)
  */
 export class GridManager {
   constructor(canvasId) {
@@ -28,7 +31,7 @@ export class GridManager {
     this.maxScale = 2.0;
     this.scaleStep = 0.1;
 
-    // 초기 그리드 크기 (행은 키 수에 맞춰 고정, 열은 config.COLS로 관리)
+    // 초기 그리드 크기 (행은 키 수에 맞춰 고정, 열은 동적으로 확장됨)
     this.rows = KEYS.length;
     this.cols = COLS;
     this.labelWidth = 64;
@@ -62,6 +65,7 @@ export class GridManager {
   }
 
   // rAF로 배칭된 배경 캔버스 다시 그리기
+  // (mark()처럼 셀 단위로 여러 번 호출되는 경로를 한 프레임에 합칩니다)
   requestRender() {
     if (this._renderQueued) return;
     this._renderQueued = true;
@@ -79,12 +83,15 @@ export class GridManager {
     zoomBy(this, deltaY, focusX, focusY);
   }
 
-  init() {
-    // 셀 div가 없으므로 월드 크기를 직접 지정 (오브젝트/플레이헤드 배치 기준)
+  // 셀 div가 없으므로 월드 크기를 직접 지정 (오브젝트/플레이헤드 배치 기준)
+  _syncWorldSize() {
     this.world.style.width  = `${this.cols * CELL_W}px`;
     this.world.style.height = `${this.rows * CELL_H}px`;
+  }
 
-    initCellState(this);
+  init() {
+    this._syncWorldSize();
+    createCellStates(this.cells, this.rows, this.cols);
     initBackgroundCanvas(this);
     createRowLabels(this);
     initPan(this);
@@ -100,6 +107,16 @@ export class GridManager {
     this.showGridLines = !this.showGridLines;
     this.requestRender();
     return this.showGridLines;
+  }
+
+  // 오브젝트 배치 시 뒤쪽에 빈 마디를 확보하도록 그리드를 늘립니다.
+  ensureColumnsForPlacement(col) {
+    return ensureColumnsForPlacement(this, col, MAX_COLS);
+  }
+
+  // 저장 파일 로드 등에서 특정 열까지 셀이 존재하도록 보장합니다.
+  ensureColumns(minCols) {
+    return expandColumns(this, minCols, MAX_COLS);
   }
 
   /**

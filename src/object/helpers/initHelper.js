@@ -34,9 +34,9 @@ export function initHelper(manager) {
     const instrumentId = e.dataTransfer.getData('instrumentId');
 
     if (fromCell) {
-      manager.move(fromCell, key);
+      manager.move(fromCell, key, { preview: true });
     } else {
-      manager.place(instrumentId, key);
+      manager.place(instrumentId, key, { preview: true });
     }
   });
 

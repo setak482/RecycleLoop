@@ -34,5 +34,5 @@ export function attachZoomWheel(grid, indicator) {
     e.preventDefault();
     grid.zoomBy(e.deltaY);
     update(grid.scale * 100);
-  });
+  }, { passive: false });
 }

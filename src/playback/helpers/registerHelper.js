@@ -1,31 +1,22 @@
 /**
+ * 악기별로 Tone.Sampler를 하나만 만들어 공유합니다.
+ * 같은 악기를 여러 셀에 배치해도 샘플 다운로드/디코딩과 오디오 노드가
+ * 중복 생성되지 않습니다. Sampler는 폴리포닉이므로 동시 발음에도 안전합니다.
+ *
  * @param {PlaybackManager} playbackManager
- * @param {string} cellKey
- * @param {Object} detail
+ * @param {Object} detail - 악기 상세 데이터 (id, sample, volume)
  */
-export function registerHelper(playbackManager, cellKey, detail) {
-  if (!detail || !detail.sample || !detail.sample.notes || Object.keys(detail.sample.notes).length === 0) {
+export function ensureSamplerHelper(playbackManager, detail) {
+  if (!detail?.id || !detail.sample?.notes || Object.keys(detail.sample.notes).length === 0) {
     return;
   }
-
   if (!playbackManager._Tone) return;
+  if (playbackManager._samplers.has(detail.id)) return;
 
-  const jsonVolume = detail.volume ?? 0;
   const sampler = new playbackManager._Tone.Sampler({
     urls: detail.sample.notes,
-    volume: jsonVolume,
+    volume: detail.volume ?? 0,
   }).toDestination();
 
-  playbackManager._samplers.set(cellKey, sampler);
-}
-
-/**
- * @param {PlaybackManager} playbackManager
- * @param {string} cellKey
- */
-export function unregisterHelper(playbackManager, cellKey) {
-  const sampler = playbackManager._samplers.get(cellKey);
-  if (!sampler) return;
-  sampler.dispose();
-  playbackManager._samplers.delete(cellKey);
+  playbackManager._samplers.set(detail.id, sampler);
 }

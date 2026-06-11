@@ -1,0 +1,19 @@
+{
+  "id": "steel_pan",
+  "name": "유리병",
+  "role": "melody",
+  "category": "melody",
+  "color": "#a8d8ea",
+  "img": "/img/steel_pan.png",
+  "pitched": true,
+  "volume": 0,
+  "duration": 1,
+  "sample": {
+    "type": "sampler",
+    "notes": {
+      "C3": "/sound/steel_pan_C3.wav",
+      "C4": "/sound/steel_pan_C4.wav",
+      "C5": "/sound/steel_pan_C5.wav"
+    }
+  }
+}

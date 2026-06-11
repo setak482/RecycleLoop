@@ -1,0 +1,11 @@
+{
+  "id": "repeat_end",
+  "name": "도돌이표 끝",
+  "role": "marker",
+  "category": "marker",
+  "marker": "repeat_end",
+  "color": "#6366f1",
+  "img": "/img/repeat_end.svg",
+  "pitched": false,
+  "sample": null
+}

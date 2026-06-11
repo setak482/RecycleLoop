@@ -1,7 +1,11 @@
 import { positionObjectAt } from './objectDomHelper.js';
 
-export function moveHelper(manager, fromKey, toKey){
+export function moveHelper(manager, fromKey, toKey, { preview = false } = {}){
     if (fromKey === toKey) return;
+
+    const toCol = parseInt(toKey.split('-')[0], 10);
+    if (Number.isInteger(toCol)) manager.grid.ensureColumnsForPlacement?.(toCol);
+
     if (manager.grid.isOccupied(toKey)) return;
 
     const obj = manager.objects.get(fromKey);
@@ -26,16 +30,16 @@ export function moveHelper(manager, fromKey, toKey){
     });
 
     obj.img.remove();
+    // 셀 div가 없으므로 월드 좌표에 직접 배치
     positionObjectAt(newImg, toKey);
     manager.grid.world.appendChild(newImg);
 
     manager.grid.setOccupied(fromKey, false);
-    manager.objects.delete(fromKey);
+    manager.deleteObject(fromKey);
     manager.grid.setOccupied(toKey, true);
-    manager.objects.set(toKey, { ...obj, img: newImg });
+    manager.setObject(toKey, { ...obj, img: newImg });
 
-    manager.playback.unregister(fromKey);
-    manager.playback.register(toKey, obj.detail);
-    manager.refreshDurationLines?.();
-    manager.playback.updateRange(manager);
+    manager.notifyChanged();
+
+    if (preview) manager.playback.previewNote?.(toKey, obj.detail);
 }

@@ -29,7 +29,8 @@
   transform-origin: top left;
   transform: scale(1) translate(0px, 0px);
   transition: none;
-  will-change: transform;
+  /* 주의: 여기에 will-change를 걸면 거대한 그리드 전체가 합성 레이어로
+     승격되어 GPU 메모리·래스터 비용이 폭증합니다 (열 확장 시 더 심각). */
 }
 
 #grid-labels {
@@ -71,4 +72,5 @@
   pointer-events: none;
   z-index: 5;
   transition: transform 0.05s linear;
+  will-change: transform;
 }

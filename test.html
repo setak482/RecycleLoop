@@ -196,13 +196,13 @@ function scheduleSequence(sequence, startTime) {
   async function loadInstruments() {
     try {
       // 1. 목록 fetch
-      const { instruments } = await fetch('/src/data/instruments.json')
+      const { instruments } = await fetch('/data/instruments.json')
         .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
 
       // 2. 각 악기 개별 fetch (현재는 blow_bottle 하나)
       const details = await Promise.all(
         instruments.map(inst =>
-          fetch(`/src/data/instruments/${inst.id}.json`)
+          fetch(`/data/instruments/${inst.id}.json`)
             .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
         )
       );

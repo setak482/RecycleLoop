@@ -1,19 +1,18 @@
+import { saveAs } from 'file-saver';
 import { showToast } from '../Toast.js';
+import { serializeProject, parseProject, makeProjectFileName } from '../../io/projectIO.js';
 
 export function setupPlaybackControls(playback, objects) {
   const playBtn = document.getElementById('btn-play');
   playBtn?.addEventListener('click', () => {
-    if (objects.getAll().length === 0) {
+    const playable = objects.getAll().filter(([, obj]) => !obj.detail?.marker);
+    if (playable.length === 0) {
       showToast('배치된 오브젝트가 없습니다. 먼저 악기를 배치해주세요.');
       return;
     }
 
+    // 버튼 상태는 아래 setPlaybackStateCallback에서 갱신됩니다.
     playback.toggle(objects);
-    setTimeout(() => {
-      const isPlaying = playback._Tone?.getTransport().state === 'started';
-      playBtn.classList.toggle('playing', isPlaying);
-      document.getElementById('play-icon').textContent = isPlaying ? '⏹' : '▶';
-    }, 100);
   });
 
   const bpmInput = document.getElementById('btn-bpm');
@@ -39,24 +38,80 @@ export function setupPlaybackControls(playback, objects) {
   });
 }
 
-export function setupFileControls(playback, objects, selection, clearInstrumentState = () => {}) {
+// 불러오기 시 한 번에 배치하는 오브젝트 수. 이 수만큼 처리한 뒤
+// 프레임에 양보해 브라우저가 그리기·입력 처리를 할 수 있게 합니다.
+const LOAD_CHUNK_SIZE = 60;
+
+function nextFrame() {
+  return new Promise(resolve => requestAnimationFrame(() => resolve()));
+}
+
+export function setupFileControls(playback, objects, selection, grid, clearInstrumentState = () => {}) {
   const saveBtn = document.getElementById('btn-save');
   const loadBtn = document.getElementById('btn-load');
   const resetBtn = document.getElementById('btn-reset');
   const loadInput = document.getElementById('load-file-input');
 
   saveBtn?.addEventListener('click', () => {
-    showToast('저장 인터페이스만 지원합니다. 실제 저장 기능은 아직 구현되지 않았습니다.');
+    const project = serializeProject(playback, objects);
+    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
+    saveAs(blob, makeProjectFileName());
+    showToast(`저장 완료 (오브젝트 ${project.objects.length}개)`);
   });
 
   loadBtn?.addEventListener('click', () => {
     loadInput?.click();
   });
 
-  loadInput?.addEventListener('change', () => {
-    if (loadInput.files?.length > 0) {
-      showToast('불러오기 인터페이스만 지원합니다. 실제 불러오기 기능은 아직 구현되지 않았습니다.');
-      loadInput.value = '';
+  let loading = false;
+  loadInput?.addEventListener('change', async () => {
+    const file = loadInput.files?.[0];
+    loadInput.value = '';
+    if (!file || loading) return;
+
+    let project;
+    try {
+      project = parseProject(await file.text());
+    } catch (err) {
+      showToast(err.message ?? '불러오기에 실패했습니다.');
+      return;
+    }
+
+    loading = true;
+    try {
+      playback.stop();
+      selection.reset();
+      clearInstrumentState();
+      applyProjectSettings(project, playback, grid, objects);
+
+      // 가장 오른쪽 오브젝트 + 배치 버퍼까지 한 번에 확장 (루프 도중 확장 방지)
+      const maxCol = project.objects.reduce((max, { cell }) => {
+        const col = parseInt(cell.split('-')[0], 10);
+        return Number.isInteger(col) && col > max ? col : max;
+      }, 0);
+      grid.ensureColumnsForPlacement(maxCol);
+
+      // 불러오기 전체를 한 번의 undo 단위 + 한 번의 렌더 갱신으로 묶고,
+      // 청크마다 프레임에 양보해 브라우저가 멈추지 않게 합니다.
+      objects.beginBulk();
+      try {
+        objects.reset();
+        const items = project.objects;
+        for (let i = 0; i < items.length; i += 1) {
+          const { cell, id } = items[i];
+          if (grid.getCell(cell)) await objects.place(id, cell);
+          if ((i + 1) % LOAD_CHUNK_SIZE === 0 && i + 1 < items.length) {
+            showToast(`불러오는 중... ${i + 1}/${items.length}`);
+            await nextFrame();
+          }
+        }
+      } finally {
+        objects.endBulk();
+      }
+
+      showToast(`불러오기 완료 (오브젝트 ${objects.getAll().length}개)`);
+    } finally {
+      loading = false;
     }
   });
 
@@ -66,4 +121,30 @@ export function setupFileControls(playback, objects, selection, clearInstrumentS
     selection.reset();
     clearInstrumentState();
   });
+}
+
+function applyProjectSettings(project, playback, grid, objects) {
+  if (project.bpm !== null) {
+    playback.setBpm(project.bpm);
+    const bpmInput = document.getElementById('btn-bpm');
+    const bpmLabel = document.getElementById('bpm-label');
+    if (bpmInput) bpmInput.value = project.bpm;
+    if (bpmLabel) bpmLabel.textContent = `${project.bpm} BPM`;
+  }
+
+  if (project.volume !== null) {
+    playback.setVolume?.(project.volume);
+    const volumeInput = document.getElementById('btn-volume');
+    const volumeLabel = document.getElementById('volume-label');
+    if (volumeInput) volumeInput.value = project.volume;
+    if (volumeLabel) volumeLabel.textContent = `${project.volume} dB`;
+  }
+
+  if (project.subdivision !== null) {
+    playback.setSubdivision(project.subdivision);
+    grid.setSubdivision(project.subdivision);
+    objects.refreshDurationLines?.();
+    const radio = document.querySelector(`input[name="sub"][value="${project.subdivision}"]`);
+    if (radio) radio.checked = true;
+  }
 }
