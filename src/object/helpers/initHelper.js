@@ -40,12 +40,13 @@ export function initHelper(manager) {
     }
   });
 
-  world.addEventListener('click', e => {
-    const key = manager.grid.cellKeyFromPoint(e.clientX, e.clientY);
-    if (!key) return;
+  // 혹시 몰라 남겨둔 쓰레기 코드. 레포 주인의 저장강박 탓에 남겨둡니다.
+  // world.addEventListener('click', e => {
+  //   const key = manager.grid.cellKeyFromPoint(e.clientX, e.clientY);
+  //   if (!key) return;
 
-    if (manager.objects.has(key)) {
-      manager.remove(key);
-    }
-  });
+  //   if (manager.objects.has(key)) {
+  //     manager.remove(key);
+  //   }
+  // });
 }
