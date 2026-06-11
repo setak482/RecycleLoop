@@ -14,6 +14,8 @@
  * @param {string} cellKey - 격자 셀 좌표 키 ("col-row" 형식)
  * @returns {Promise<void>}
  */
+import { positionObjectAt } from './objectDomHelper.js';
+
 export async function placeHelper(manager, id, cellKey) {
     if (manager.grid.isOccupied(cellKey)) return;
 
@@ -39,7 +41,8 @@ export async function placeHelper(manager, id, cellKey) {
       img.classList.remove('dragging');
     });
 
-    manager.grid.getCell(cellKey).el.appendChild(img);
+    positionObjectAt(img, cellKey);
+    manager.grid.world.appendChild(img);
     img.classList.add('bounce-in');
     img.addEventListener('animationend', () => {
       img.classList.remove('bounce-in');

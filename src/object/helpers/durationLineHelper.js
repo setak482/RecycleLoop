@@ -9,7 +9,7 @@ export function getDurationColumnCount(durationSeconds, bpm, subdivision) {
 }
 
 export function clearDurationLines(grid) {
-  grid.cells.forEach(cell => cell.el.classList.remove('duration-line'));
+  grid.clearMarks('duration');
 }
 
 export function renderDurationLines(grid, objects, bpm) {
@@ -27,7 +27,7 @@ export function renderDurationLines(grid, objects, bpm) {
       const targetCol = col + step;
       if (targetCol >= grid.cols) break;
       const targetKey = `${targetCol}-${row}`;
-      grid.getCell(targetKey)?.el.classList.add('duration-line');
+      if (grid.getCell(targetKey)) grid.mark('duration', targetKey, true);
     }
   });
 }

@@ -13,11 +13,8 @@ export function isMeasureBoundary(col, interval) {
   return (col + 1) % interval === 0;
 }
 
+// 마디선은 renderHelper가 subdivision을 보고 직접 그리므로 값만 갱신
 export function applySubdivisionMarkers(manager, subdivision) {
-  const interval = getMeasureInterval(subdivision);
   manager.subdivision = subdivision;
-  manager.cells.forEach((cell, key) => {
-    const col = parseInt(key.split('-')[0], 10);
-    cell.el.classList.toggle('bar-line', isMeasureBoundary(col, interval));
-  });
+  manager.requestRender();
 }

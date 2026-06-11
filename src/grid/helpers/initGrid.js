@@ -1,27 +1,33 @@
 import { KEYS } from "../../constants/keys";
 import { CELL_H, CELL_W } from "../../constants/config";
 
-export function setGridStyle(worldElement, rows, cols){
-    worldElement.style.gridTemplateColumns = `repeat(${cols}, ${CELL_W}px)`;
-    worldElement.style.gridTemplateRows    = `repeat(${rows}, ${CELL_H}px)`;
-    console.log("Grid Style Set.");
-}
-
-export function createCell(worldElement, cellElement, rows, cols) {
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const cell = document.createElement('div');
-      const key  = `${c}-${r}`;
-
-      cell.classList.add('grid-cell');
-      cell.dataset.key  = key;
-      cell.dataset.note = KEYS[r].note;
-
-      cellElement.set(key, { el: cell, occupied: false, note: KEYS[r].note });
-      worldElement.appendChild(cell);
+// 셀 상태만 생성 (DOM 없음) — 셀당 div를 만들던 방식을 대체
+export function initCellState(manager) {
+  for (let r = 0; r < manager.rows; r++) {
+    for (let c = 0; c < manager.cols; c++) {
+      manager.cells.set(`${c}-${r}`, { occupied: false, note: KEYS[r].note });
     }
   }
-  console.log("Cell Created.");
+  console.log("Cell State Created.");
+}
+
+// 그리드 선/하이라이트를 그릴 배경 캔버스 생성 (뷰포트 크기 고정)
+export function initBackgroundCanvas(manager) {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'grid-bg';
+  manager.canvas.insertBefore(canvas, manager.canvas.firstChild);
+  manager._bg = { canvas, ctx: canvas.getContext('2d'), dpr: 1 };
+
+  const resize = () => {
+    const dpr = window.devicePixelRatio || 1;
+    manager._bg.dpr = dpr;
+    canvas.width  = manager.canvas.clientWidth * dpr;
+    canvas.height = manager.canvas.clientHeight * dpr;
+    manager.requestRender();
+  };
+  resize();
+  window.addEventListener('resize', resize);
+  console.log("Background Canvas Created.");
 }
 
 export function centerGrid(manager) {

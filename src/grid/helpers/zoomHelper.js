@@ -25,7 +25,7 @@ export function setZoom(manager, scale, focusX, focusY) {
     const offsetY = focusRelY - worldY * newScale;
     manager._setOffset(offsetX, offsetY);
   } else {
-    applyTransform(manager);
+    manager._applyTransform();
   }
 }
 

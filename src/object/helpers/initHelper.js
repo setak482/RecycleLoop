@@ -1,33 +1,37 @@
 export function initHelper(manager) {
   const world = manager.grid.world;
+  let hoverKey = null;
+
+  const setHover = (key) => {
+    if (hoverKey === key) return;
+    if (hoverKey) manager.grid.mark('hover', hoverKey, false);
+    hoverKey = key;
+    if (key) manager.grid.mark('hover', key, true);
+  };
 
   world.addEventListener('dragover', e => {
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
+    const key = manager.grid.cellKeyFromPoint(e.clientX, e.clientY);
+    if (!key) return;
 
     e.preventDefault();
-    cell.classList.add('highlight');
+    setHover(key);
   });
 
   world.addEventListener('dragleave', e => {
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
-
-    if (!cell.contains(e.relatedTarget)) {
-      cell.classList.remove('highlight');
+    if (!world.contains(e.relatedTarget)) {
+      setHover(null);
     }
   });
 
   world.addEventListener('drop', e => {
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
+    const key = manager.grid.cellKeyFromPoint(e.clientX, e.clientY);
+    if (!key) return;
 
     e.preventDefault();
-    cell.classList.remove('highlight');
+    setHover(null);
 
     const fromCell = e.dataTransfer.getData('fromCell');
     const instrumentId = e.dataTransfer.getData('instrumentId');
-    const key = cell.dataset.key;
 
     if (fromCell) {
       manager.move(fromCell, key);
@@ -37,10 +41,9 @@ export function initHelper(manager) {
   });
 
   world.addEventListener('click', e => {
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
+    const key = manager.grid.cellKeyFromPoint(e.clientX, e.clientY);
+    if (!key) return;
 
-    const key = cell.dataset.key;
     if (manager.objects.has(key)) {
       manager.remove(key);
     }

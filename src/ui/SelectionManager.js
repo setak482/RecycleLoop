@@ -132,11 +132,8 @@ export class SelectionManager {
     if (!this.selectionMode || e.button !== 0) return;
     if (this.pasteState.active) return;
 
-    const cell = e.target.closest('.grid-cell');
-    if (!cell) return;
-
-    const key = cell.dataset.key;
-    const clickedOnObject = !!e.target.closest('.placed-object');
+    const key = this.grid.cellKeyFromPoint(e.clientX, e.clientY);
+    if (!key) return;
 
     if (this.selectionState.keys.has(key) && this.selectionState.keys.size > 0) {
       this.moveState.active = true;
@@ -157,8 +154,8 @@ export class SelectionManager {
     this.selectionState.active = true;
     this.selectionState.startX = e.clientX;
     this.selectionState.startY = e.clientY;
-    this.selectionState.startKey = cell.dataset.key;
-    this.selectionState.currentKey = cell.dataset.key;
+    this.selectionState.startKey = key;
+    this.selectionState.currentKey = key;
     this.highlightSelection(this.selectionState.startKey, this.selectionState.currentKey);
     updateSelectionBox(this.selectionBox, e.clientX, e.clientY, e.clientX, e.clientY);
     e.preventDefault();
@@ -166,7 +163,7 @@ export class SelectionManager {
 
   handleMouseMove = (e) => {
     if (this.pasteState.active) {
-      const currentKey = getCellKeyAtPoint(e.clientX, e.clientY);
+      const currentKey = getCellKeyAtPoint(this.grid, e.clientX, e.clientY);
       this.updatePastePreview(currentKey);
       return;
     }
@@ -177,7 +174,7 @@ export class SelectionManager {
       if (!this.moveState.hasMoved && Math.sqrt(dx * dx + dy * dy) > this.DRAG_THRESHOLD) {
         this.moveState.hasMoved = true;
       }
-      const currentKey = getCellKeyAtPoint(e.clientX, e.clientY);
+      const currentKey = getCellKeyAtPoint(this.grid, e.clientX, e.clientY);
       if (currentKey && this.moveState.hasMoved) {
         const [col, row] = parseCellKey(currentKey);
         const baseCol = col - this.moveState.anchorOffset.col;
@@ -194,7 +191,7 @@ export class SelectionManager {
     }
 
     if (!this.selectionState.active) return;
-    const currentKey = getCellKeyAtPoint(e.clientX, e.clientY);
+    const currentKey = getCellKeyAtPoint(this.grid, e.clientX, e.clientY);
     if (currentKey && currentKey !== this.selectionState.currentKey) {
       this.selectionState.currentKey = currentKey;
       this.highlightSelection(this.selectionState.startKey, this.selectionState.currentKey);

@@ -1,3 +1,5 @@
+import { positionObjectAt } from './objectDomHelper.js';
+
 export function moveHelper(manager, fromKey, toKey){
     if (fromKey === toKey) return;
     if (manager.grid.isOccupied(toKey)) return;
@@ -24,7 +26,8 @@ export function moveHelper(manager, fromKey, toKey){
     });
 
     obj.img.remove();
-    manager.grid.getCell(toKey).el.appendChild(newImg);
+    positionObjectAt(newImg, toKey);
+    manager.grid.world.appendChild(newImg);
 
     manager.grid.setOccupied(fromKey, false);
     manager.objects.delete(fromKey);

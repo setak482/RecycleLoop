@@ -1,21 +1,19 @@
 export function clearSelection(grid, objects, selectionState) {
   selectionState.keys.forEach(key => {
-    const cell = grid.getCell(key);
-    if (cell) cell.el.classList.remove('selected');
     const obj = objects.objects.get(key);
     if (obj?.img) {
       obj.img.classList.remove('selected-object');
     }
   });
+  grid.clearMarks('selected');
   selectionState.keys.clear();
 }
 
 export function updateSelectionKeys(keys, grid, objects, selectionState) {
   clearSelection(grid, objects, selectionState);
   keys.forEach(key => {
-    const cell = grid.getCell(key);
-    if (!cell) return;
-    cell.el.classList.add('selected');
+    if (!grid.getCell(key)) return;
+    grid.mark('selected', key, true);
     selectionState.keys.add(key);
 
     const obj = objects.objects.get(key);
@@ -51,6 +49,9 @@ export function hideSelectionBox(selectionBox) {
   selectionBox.style.display = 'none';
 }
 
-export function getCellKeyAtPoint(clientX, clientY) {
-  return document.elementFromPoint(clientX, clientY)?.closest('.grid-cell')?.dataset.key ?? null;
+export function getCellKeyAtPoint(grid, clientX, clientY) {
+  // 플로팅 패널 등 다른 UI 위에서는 무시 (기존 elementFromPoint 동작 유지)
+  const el = document.elementFromPoint(clientX, clientY);
+  if (!el || !grid.canvas.contains(el)) return null;
+  return grid.cellKeyFromPoint(clientX, clientY);
 }
