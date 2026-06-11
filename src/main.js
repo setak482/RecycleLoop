@@ -23,3 +23,9 @@ attachZoomWheel(grid, zoomIndicator);
 
 setupUI(playback, objects, selection, grid, history);
 selection.init();
+
+// 개발 모드 한정: 콘솔/자동화 테스트에서 내부 상태를 점검하기 위한 핸들
+// (프로덕션 번들에서는 트리셰이킹으로 제거됨)
+if (import.meta.env.DEV) {
+  window.__recycloop = { grid, playback, objects, history, selection };
+}
