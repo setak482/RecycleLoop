@@ -1,0 +1,436 @@
+{
+  "format": "recycloop-project",
+  "version": 1,
+  "savedAt": "2026-06-11T13:42:56.225Z",
+  "settings": {
+    "bpm": 109,
+    "subdivision": "16n",
+    "volume": -7
+  },
+  "objects": [
+    {
+      "cell": "16-10",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "20-10",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "24-10",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "79-10",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "19-12",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "23-12",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "31-12",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "78-12",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "18-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "22-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "30-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "32-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "36-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "77-13",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "29-15",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "35-15",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "76-15",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "28-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "34-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "45-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "47-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "50-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "63-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "66-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "68-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "75-17",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "27-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "46-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "51-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "62-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "67-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "70-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "72-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "74-18",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "26-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "41-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "48-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "52-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "61-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "64-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "71-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "73-20",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "25-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "40-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "42-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "44-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "54-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "56-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "60-22",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "39-24",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "55-24",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "57-24",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "59-24",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "16-25",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "38-25",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "58-25",
+      "id": "cling_glass"
+    },
+    {
+      "cell": "24-27",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "16-29",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "22-29",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "32-29",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "30-30",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "40-30",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "72-30",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "78-30",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "32-32",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "38-32",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "48-32",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "64-32",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "20-34",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "24-34",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "46-34",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "56-34",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "72-34",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "48-36",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "54-36",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "64-36",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "70-36",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "18-37",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "36-37",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "40-37",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "44-37",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "62-37",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "28-39",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "76-39",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "16-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "34-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "42-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "52-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "56-41",
+      "id": "blow_bottle"
+    },
+    {
+      "cell": "60-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "68-41",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "26-42",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "74-42",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "32-44",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "50-44",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "66-44",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "24-46",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "40-46",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "58-46",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "72-46",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "48-48",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "64-48",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "56-49",
+      "id": "steel_pan"
+    },
+    {
+      "cell": "16-50",
+      "id": "repeat_start"
+    },
+    {
+      "cell": "79-51",
+      "id": "repeat_end"
+    },
+    {
+      "cell": "43-24",
+      "id": "cling_glass"
+    }
+  ]
+}
