@@ -5,7 +5,7 @@ export function getDurationColumnCount(durationSeconds, bpm, subdivision) {
 
   const interval = getMeasureInterval(subdivision);
   const secondsPerColumn = (60 / bpm) * (4 / interval);
-  return Math.max(1, Math.floor(durationSeconds / secondsPerColumn)-1);
+  return Math.max(0, Math.floor(durationSeconds / secondsPerColumn)-1);
 }
 
 export function clearDurationLines(grid) {
