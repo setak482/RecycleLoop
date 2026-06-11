@@ -1,6 +1,7 @@
 {
   "categories": [
     { "id": "melody", "name": "멜로디" },
+    { "id": "beat", "name":"비트"},
     { "id": "rest",   "name": "쉼표" },
     { "id": "marker", "name": "마커" }
   ],
@@ -8,8 +9,10 @@
     { "id": "blow_bottle",  "name": "페트병 불기",   "role": "melody", "category": "melody", "pitched": true },
     { "id": "cling_glass",  "name": "유리병",        "role": "melody", "category": "melody", "pitched": true },
     { "id": "steel_pan",  "name": "스틸 팬",        "role": "melody", "category": "melody", "pitched": true },
-    { "id": "squeeze_bottle", "name": "페트병 구기기", "role": "melody", "category": "melody", "pitched": false },
-    { "id": "opening_can", "name": "캔 따기", "role": "melody", "category": "melody", "pitched": false },
+    { "id": "squeeze_bottle", "name": "페트병 구기기", "role": "beat", "category": "beat", "pitched": false },
+    { "id": "kick_box", "name": "종이박스", "role": "beat", "category": "beat", "pitched": false },
+    { "id": "hit_tin_can", "name": "캔 두드리기", "role": "beat", "category": "beat", "pitched": false },
+    { "id": "opening_can", "name": "캔 따기", "role": "beat", "category": "beat", "pitched": false },
     { "id": "rest",         "name": "쉼표",          "role": "rest",   "category": "rest",   "pitched": false },
     { "id": "marker_start", "name": "시작점",        "role": "marker", "category": "marker", "pitched": false, "img": "/img/marker_start.svg" },
     { "id": "marker_stop",  "name": "중단점",        "role": "marker", "category": "marker", "pitched": false, "img": "/img/marker_stop.svg" },

@@ -1,17 +1,17 @@
 {
-  "id": "squeeze_bottle",
-  "name": "페트병 구기기",
+  "id": "kick_box",
+  "name": "종이박스",
   "role": "beat",
   "category": "beat",
   "color": "#a8d8ea",
-  "img": "/img/squeeze_bottle.png",
+  "img": "/img/kick_box.png",
   "pitched": false,
-  "volume": 0,
+  "volume": 1,
   "duration": 0.25,
   "sample": {
     "type": "sampler",
     "notes": {
-      "C4": "/sound/squeeze_bottle.wav"
+      "C3": "/sound/kick_box.wav"
     }
   }
 }

@@ -1,17 +1,17 @@
 {
-  "id": "opening_can",
-  "name": "캔 따기",
+  "id": "hit_tin_can",
+  "name": "캔 두드리기",
   "role": "beat",
   "category": "beat",
   "color": "#a8d8ea",
-  "img": "/img/opening_can.png",
+  "img": "/img/hit_tin_can.png",
   "pitched": false,
   "volume": 0,
-  "duration": 0.65,
+  "duration": 0.25,
   "sample": {
     "type": "sampler",
     "notes": {
-      "C4": "/sound/opening_can.wav"
+      "C4": "/sound/hit_tin_can.wav"
     }
   }
 }
