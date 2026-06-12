@@ -2,8 +2,7 @@
 
 **RecycleLoop**는 재활용품(유리병, 캔, 종이박스 등)의 소리를 악기로 활용하여 음악을 만들 수 있는 **웹 기반 단일 채널 루프 시퀀서 및 피아노롤(Piano Roll)** 입니다.
 
-### 🔗 [Live Demo 보러가기](https://your-vercel-project-url.vercel.app)
-*(여기에 Vercel 배포 링크를 입력해주세요)*
+### 🔗 [Live Demo 보러가기](https://recycle-loop-maker.vercel.app)
 
 <br>
 
